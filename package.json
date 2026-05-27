@@ -1,0 +1,22 @@
+{
+  "name": "antigravity-generator",
+  "version": "0.1.0",
+  "description": "Premium security-first, Caveman-styled skill generator for Antigravity 2.0.",
+  "main": "scripts/generate.js",
+  "type": "module",
+  "scripts": {
+    "generate": "node scripts/generate.js",
+    "install-global": "node scripts/install_global.js"
+  },
+  "keywords": [
+    "antigravity",
+    "skills",
+    "generator",
+    "caveman"
+  ],
+  "author": "Antigravity Principal Engineer",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

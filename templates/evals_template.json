@@ -1,0 +1,11 @@
+{
+  "skill_name": "{{NAME}}",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Test case 1: Turn this typical user idea into a {{NAME}} execution.",
+      "expected_output": "Exact verifiable outputs (file transforms, code edits, or command outputs) matching safety checks.",
+      "files": []
+    }
+  ]
+}
