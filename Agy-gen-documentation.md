@@ -1,0 +1,132 @@
+# Agy-gen-documentation.md — Antigravity Generator Guide (Caveman Style)
+
+> [!NOTE]
+> Dense, high-density documentation for agy-gen toolset. Future-proof. Covers architectures, commands, prompting, and tests.
+
+---
+
+## 🛠️ 1. System Architecture
+
+agy-gen is a premium, zero-dependency skill-engine, hook-rule, and multi-agent system generator.
+
+### Workspace Footprint Map
+```mermaid
+graph TD
+    UserApp[c:/Users/Daniel/...] --> LocalWorkspace[Target Project Folder/]
+    LocalWorkspace --> LocalSkill[skills/my-skill/]
+    LocalSkill --> SKILL_MD[SKILL.md - Playbook]
+    LocalSkill --> AL_Index[lessons_index.md - Bug Index]
+    LocalSkill --> AL_Play[playbook.md - Fix database]
+    LocalSkill --> LocalEvals[evals/evals.json]
+    LocalSkill --> LocalRefs[references/conventions.md]
+    LocalSkill --> LocalScripts[scripts/security_check.js]
+
+    GlobalConfig[~/.gemini/config/agy-gen/] --> GlobalIndex[skills_index.json - Catalog database]
+    GlobalConfig --> GlobalSkills[skills/ - Global slash command manifests]
+```
+
+### Config Directories (Isolated):
+* **Root folder**: `~/.gemini/config/agy-gen/` (mapped platform-agnostically via `os.homedir()`).
+* **Registry Database file**: `~/.gemini/config/agy-gen/skills_index.json`
+* **Global command manifests**: `~/.gemini/config/agy-gen/skills/`
+
+---
+
+## 📝 2. Unified Prompt Architecture (UPA)
+
+Every generated `SKILL.md` template is structured according to the **Unified Prompt Architecture (UPA)**, optimizing execution performance across both frontier and non-frontier models.
+
+### UPA Rules:
+1. **Static-First Structuring**: Place all immutable instructions, roles, contexts, and constraints inside stable XML tags at the top of the file. Keeps context prefix-cached.
+2. **Behavioral Success Precision**: Define strict execution boundaries and forbidden actions under exact XML tags using literal, unambiguous success metrics (no vague terms).
+3. **Outcome-First Autonomy**: Define the final state deliverables and exit codes clearly. Allow reasoning agents execution path autonomy.
+
+### Schema Template Layout:
+```xml
+<instructions>
+  <role>Define agent persona/casing.</role>
+  <context>Define module context, conventions guides, autolearner references.</context>
+  <task_definition>Specify exact lint/compilation commands, target folders.</task_definition>
+  <output_format>Define exit codes (0 = Success, 1 = Error) and deliverables.</output_format>
+  <scope_constraints>Strict sandboxing limits, credentials firewalls.</scope_constraints>
+</instructions>
+```
+
+---
+
+## 🚀 3. CLI Command & Parameters Reference
+
+agy-gen operates either as a guided interactive terminal or via specialized query flags.
+
+### Interactive Guided Generator:
+```bash
+# Launch guide (Skill / Hook / Agent / System coordinates)
+npm run generate
+```
+
+### Administrative & Query Parameters:
+```bash
+# 1. List all globally cataloged skills across projects
+agy-gen --list
+
+# 2. Fuzzy search registry index by keyword or tag
+agy-gen --search <term>
+
+# 3. Recursively crawl a folder to discover and index existing skills
+agy-gen --scan <directory-path>
+
+# 4. Scaffolding with global-index bypass (Bypasses registerSkill hook)
+agy-gen --local-only
+
+# 5. Unregister skill from registry index
+agy-gen --remove <skill-name>
+
+# 6. Unregister skill AND physically purge its folders from disk
+# (purges are restricted strictly to files inside the global ~/.gemini/config/agy-gen/ path)
+agy-gen --remove <skill-name> --purge
+```
+
+---
+
+## 🔄 4. Autolearner Protocol Integration
+
+Self-improving loops are coordinated using a synchronized dual-file layout in child skills:
+
+### 1. `lessons_index.md` (Telemetry Log)
+* High-level log storing exact Coordinate bullet points linking to playbook solution lines:
+  ```markdown
+  - `[ERROR_TAG_01]` Brief issue summary. Ref: playbook.md#L10-L20
+  ```
+
+### 2. `playbook.md` (Knowledge Database)
+* Houses complete technical post-mortems, root causes, OS platform differences, and tested code workarounds grouped under anchoring markdown headers:
+  ```markdown
+  ## [ERROR_TAG_01] Brief issue summary
+  - **Issue**: Description.
+  - **Cause**: Structural root cause.
+  - **Fix**: Instructions to bypass.
+  - **Code Workaround**: Multi-line script workaround blocks.
+  ```
+
+---
+
+## 🧪 5. Testing & Regressions Firewall
+
+Unified testing ensures zero regressions. Dual-verification is mandated:
+
+### Test Suites:
+* **TDD Unit Tests (`scripts/test_indexing.js`)**: Validates database load/store integrity, fuzzy searches, and YAML frontmatter parses under isolated test environments.
+* **E2E Sandbox Integration (`scripts/verify_index_sandbox.js`)**: Dynamically scaffolds mock skills, scanning and unregistering them via CLI wrapper executions, asserting correct exit statuses.
+
+```bash
+# Run full scaffolding, autolearner, unit, and E2E sandbox verification chain
+npm run test
+```
+
+---
+
+## 🛡️ 6. Core Safety Guardrails
+
+1. **Credentials Firewall**: Plain-text keys/secrets are strictly scanned and banned. All templates use env variables.
+2. **Directory Purge Shield**: The `--purge` command deletes physical directories *only* if they reside inside the global `~/.gemini/config/agy-gen/` workspace. Local developer project workspaces are structurally protected from accidental deletions.
+3. **Robust CLI Atomic Writes**: All registry updates are written to temporary files first (`.tmp`) and then renamed, eliminating the risk of registry file corruption.
