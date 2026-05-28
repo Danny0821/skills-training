@@ -5,6 +5,7 @@
 - **Caveman Markdown**: All docs/templates in telegraph-speak. No fluff. Cuts 70% tokens. Keep precise paths.
 - **Firewall Code Quality**: JS/TS code MUST be high-quality. Full comments, robust types, complete error checking. Never caveman code.
 - **Security Guardrails**: Always enforce sandbox, credentials safety, no plaintext keys, shell safety wrappers.
+- **Release Documentation Firewall**: Every release version bump (e.g. 0.3.0 -> 0.3.1 -> 0.4.0) MANDATORILY requires updating `Agy-gen-documentation.md` to reflect all architectural changes, CLI flags, and schemas before closing.
 
 ## Lessons
 - `lessons_index.md` & `playbook.md` key for self-improvement. Always scaffold them in child skills.
