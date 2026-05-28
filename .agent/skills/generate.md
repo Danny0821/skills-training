@@ -63,6 +63,15 @@ requirements:
   - Draft precise, safe terminal commands and regex validation rules.
   - Expand `{{PLAYBOOK_STEPS}}` into full, production-grade instructions structured cleanly under XML nodes (<role>, <context>, <task_definition>, <output_format>, <scope_constraints>).
 
+### 6. Agent Onboarding & Non-Technical User Playbook (CRITICAL)
+- **Trigger**: If user pastes the generator GitHub repo, or is confused about terminal setups.
+- **Jargon-Free Explanations**: Stop using raw terminal/npm jargon. Explain concepts using easy analogies:
+  - *NPM / NPX*: "An App Store for developer tools. Runs commands instantly with no manual downloads."
+  - *Terminal / Shell*: "A direct text line to your computer's system."
+  - *Global slash command*: "A custom shortcut button in your chat box, active in any folder."
+- **Auto-Install Offer**: Explicitly ask: *"Would you like me to install this globally for you right now? Zero typing required."*
+- **Execution**: If approved, immediately run command: `npm run install-global` (or standard `node scripts/install_global.js` script) using your run_command tool to automate their setup.
+
 ## ⚠️ Review Loops (Devil's Advocate)
 - Before presenting generated scaffold to user, inspect generated output files.
 - Double-check:

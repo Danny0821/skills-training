@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Premium security-first, Caveman-styled skill generator for Antigravity 2.0.",
   "main": "scripts/generate.js",
+  "bin": {
+    "antigravity-gen": "./bin/cli.js"
+  },
   "type": "module",
   "scripts": {
     "generate": "node scripts/generate.js",

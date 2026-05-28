@@ -176,6 +176,7 @@ async function runAutolearnerTests() {
     console.log("\n=====================================================");
     console.log("🎉 Autolearner Protocol tests completed and passed successfully!");
     console.log("=====================================================");
+    process.exit(0);
   } catch (err) {
     console.error(`\n❌ Autolearner tests failed: ${err.message}`);
     process.exit(1);

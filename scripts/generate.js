@@ -341,7 +341,7 @@ export async function scaffoldSkillSystem(options) {
 /**
  * Main Interactive Scaffolding loop.
  */
-async function main() {
+export async function main() {
   console.clear();
   console.log("==================================================================");
   console.log("             Antigravity 2.0 Generator Scaffolder CLI            ");

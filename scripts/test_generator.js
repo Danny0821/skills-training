@@ -102,6 +102,7 @@ async function runTests() {
     console.log("=====================================================");
     console.log("🎉 All programmatic scaffolding tests passed successfully!");
     console.log("=====================================================");
+    process.exit(0);
   } catch (err) {
     console.error(`\n❌ Test suite failed: ${err.message}`);
     process.exit(1);
