@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "generate": "node scripts/generate.js",
-    "install-global": "node scripts/install_global.js"
+    "install-global": "node scripts/install_global.js",
+    "test-autolearner": "node scripts/test_autolearner.js",
+    "test": "node scripts/test_generator.js && node scripts/test_autolearner.js"
   },
   "keywords": [
     "antigravity",
