@@ -10,3 +10,4 @@
 - `lessons_index.md` & `playbook.md` key for self-improvement. Always scaffold them in child skills.
 - Windows path vs Linux: Node `path.join` or `path.resolve` mandatory. Avoid raw slashes.
 - Readline block: readline needs standard close cleanup. Keep streams clean.
+- Unified Prompt Architecture (UPA): Use stable XML tags (`<role>`, `<context>`, `<scope_constraints>`) at top. Isolates rules. Future-proofs models. Elevates performance on both frontier and non-frontier models.

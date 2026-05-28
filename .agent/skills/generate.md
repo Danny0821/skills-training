@@ -50,9 +50,9 @@ requirements:
 
 ### 4. Apply 2026 Frontier Models Guidelines
 - When writing generated skill playbooks/instructions:
-  - **Outcome-First (GPT-5.5)**: Define concrete destination success criteria, drop rigid process constraints.
-  - **Extreme Literalism (Claude 4.7)**: Avoid vague verbs like "review" or "improve". Write exact execution parameters.
-  - **Prompt Caching (Gemini 3.5 / Claude 4.7)**: Place static rules first, dynamic variables last. Keep formatting character-stable.
+  - **Outcome-First (Reasoning-Class Models)**: Define concrete destination success criteria, drop rigid process constraints.
+  - **Extreme Literalism (Instruction-Following Models)**: Avoid vague verbs like "review" or "improve". Write exact execution parameters.
+  - **Prompt Caching (Prefix-Caching Models)**: Place static rules first, dynamic variables last. Keep formatting character-stable.
 
 ### 5. Prompt Enhancement & Elaboration Rule (CRITICAL)
 - **Do not copy-paste raw user ideas** into the generated templates.

@@ -1,0 +1,11 @@
+{
+  "skill_name": "rust-specialist",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit the active Cargo workspace for memory safety and clippy warning compliance.",
+      "expected_output": "🟢 Rust workspace conforms to systems and safety guidelines.",
+      "files": []
+    }
+  ]
+}

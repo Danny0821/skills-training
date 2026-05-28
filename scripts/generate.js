@@ -15,6 +15,7 @@ import path from 'path';
 import os from 'os';
 import { fileURLToPath } from 'url';
 import readline from 'readline';
+import { registerSkill } from './index_manager.js';
 
 // Resolve current directory for ES modules to properly locate templates
 const __filename = fileURLToPath(import.meta.url);
@@ -99,7 +100,7 @@ function scaffoldAutolearner(targetDir, componentName) {
  * @param {Object} options Scaffolding options.
  */
 export function scaffoldSkill(options) {
-  const { name, description, tags, targetDir, isSubSkill = false } = options;
+  const { name, description, tags, targetDir, isSubSkill = false, localOnly = false } = options;
 
   console.log(`\nScaffolding Skill: ${name}...`);
   ensureDirectory(targetDir);
@@ -164,6 +165,25 @@ verifyEnvironment();
 
   // Scaffold Autolearner
   scaffoldAutolearner(targetDir, name);
+
+  // Register skill to global index
+  if (!localOnly) {
+    try {
+      registerSkill({
+        name: name,
+        description: description,
+        version: '0.1.0',
+        triggers: [`idea: check ${name}`, `/${name}`],
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean)
+      }, targetDir);
+      console.log(`  🟢 Registered skill in agy-gen global index.`);
+    } catch (indexErr) {
+      console.warn(`  ⚠️ Warning: Failed to register skill in index: ${indexErr.message}`);
+    }
+  } else {
+    console.log(`  ⚠️ Local-only mode enabled. Bypassing global registry registration.`);
+  }
+
   console.log(`🟢 Skill [${name}] successfully scaffolded!`);
 }
 
@@ -396,7 +416,9 @@ export async function main() {
       case '1': {
         const description = (await askQuestion("Enter short description: ")).trim() || "Custom Antigravity skill.";
         const tags = (await askQuestion("Enter comma-separated tags (e.g. security, python, review): ")).trim() || "general";
-        scaffoldSkill({ name, description, tags, targetDir });
+        const localOnlyAnswer = (await askQuestion("Explicitly keep this skill local-only (y/N)? ")).trim().toLowerCase();
+        const localOnly = localOnlyAnswer === 'y' || localOnlyAnswer === 'yes';
+        scaffoldSkill({ name, description, tags, targetDir, localOnly });
         break;
       }
       case '2': {
