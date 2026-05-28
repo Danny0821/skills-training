@@ -11,15 +11,16 @@
  * - Zero external dependencies.
  */
 
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const generatePath = path.resolve(__dirname, '../scripts/generate.js');
+const generateUrl = pathToFileURL(generatePath).href;
 
 // Dynamically import generate.js and run its exported main function
-import(generatePath).then((module) => {
+import(generateUrl).then((module) => {
   if (module.main) {
     module.main();
   } else {
