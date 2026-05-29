@@ -45,9 +45,15 @@ npm run test
 ```
 
 ### Option C: Global Slash Command Registration (Zero-Keyboard Shortcut)
-You can register the generator globally as a native slash command inside your AI Agent chat environment interface:
+You can register the generator globally to enable native `/generate`, `/interview`, and `/grill-blueprint` slash commands inside your AI Agent chat environment interface:
+
+#### Method 1: Instant One-Liner (No repository clone required)
 ```bash
-# Register the /generate slash command globally on your machine
+npx -y github:Danny0821/skills-training --install
+```
+
+#### Method 2: Local Project Directory (If cloned locally)
+```bash
 npm run install-global
 ```
 Once successfully executed, typing `/generate` directly in your chat interface will automatically boot up the guided generator, delivering a zero-keyboard setup experience.
