@@ -53,19 +53,26 @@ for dir in "${GLOBAL_SKILLS_DIRS[@]}"; do
 
     # 3a. Install /generate command
     mkdir -p "$dir/generate"
-    curl -fsSL "$GITHUB_RAW_BASE/.agent/skills/generate.md" -o "$dir/generate/SKILL.md"
+    curl -fsSL "$GITHUB_RAW_BASE/command_manifests/generate.md" -o "$dir/generate/SKILL.md"
     echo -e "    ${GREEN}✓ Registered /generate command${NC}"
 
     # 3b. Install /interview (agentic-interviewer) command
     mkdir -p "$dir/agentic-interviewer"
     for file in "SKILL.md" "interview.json" "lessons_index.md" "playbook.md"; do
-        curl -fsSL "$GITHUB_RAW_BASE/.agent/skills/agentic-interviewer/$file" -o "$dir/agentic-interviewer/$file"
+        curl -fsSL "$GITHUB_RAW_BASE/command_manifests/agentic-interviewer/$file" -o "$dir/agentic-interviewer/$file"
     done
     echo -e "    ${GREEN}✓ Registered /interview command${NC}"
+
+    # 3c. Install /grill-blueprint (grill-blueprint) command
+    mkdir -p "$dir/grill-blueprint"
+    for file in "SKILL.md" "interview.json" "lessons_index.md" "playbook.md"; do
+        curl -fsSL "$GITHUB_RAW_BASE/command_manifests/grill-blueprint/$file" -o "$dir/grill-blueprint/$file"
+    done
+    echo -e "    ${GREEN}✓ Registered /grill-blueprint command${NC}"
 done
 
 echo -e "\n${GREEN}=========================================================${NC}"
 echo -e "${GREEN}🟢 Success! System-wide registration complete.${NC}"
 echo -e "\n${GREEN}✨ The native slash commands are now active globally!${NC}"
-echo -e "${GREEN}👉 You can now type '/generate' or '/interview' inside your agy client.${NC}"
+echo -e "${GREEN}👉 You can now type '/generate', '/interview', or '/grill-blueprint' inside your agy client.${NC}"
 echo -e "${GREEN}=========================================================${NC}"

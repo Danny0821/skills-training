@@ -1,6 +1,6 @@
 {
   "name": "antigravity-generator",
-  "version": "0.6.8",
+  "version": "0.6.9",
   "description": "Premium security-first, Caveman-styled skill generator for Antigravity 2.0.",
   "main": "tool_scripts/generate.js",
   "bin": {

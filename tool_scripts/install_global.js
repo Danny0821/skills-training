@@ -33,6 +33,7 @@ const GLOBAL_BIN_DIR = path.resolve(os.homedir(), '.gemini/config/bin');
 // Source paths relative to package root (supports npx and local runs)
 const LOCAL_COMMAND_PATH = path.join(PACKAGE_ROOT, 'command_manifests/generate.md');
 const LOCAL_INTERVIEW_PATH = path.join(PACKAGE_ROOT, 'command_manifests/agentic-interviewer');
+const LOCAL_BLUEPRINT_PATH = path.join(PACKAGE_ROOT, 'command_manifests/grill-blueprint');
 
 /**
  * Recursively copies a directory to a target destination in zero-dependency Node.js.
@@ -70,6 +71,9 @@ function installGlobally() {
     if (!fs.existsSync(LOCAL_INTERVIEW_PATH)) {
       throw new Error(`Source interviewer folder not found at ${LOCAL_INTERVIEW_PATH}.`);
     }
+    if (!fs.existsSync(LOCAL_BLUEPRINT_PATH)) {
+      throw new Error(`Source blueprint folder not found at ${LOCAL_BLUEPRINT_PATH}.`);
+    }
 
     // 2. Synchronize to all potential native slash command folders (Quad-Path Sync)
     console.log("📁 Syncing slash command manifests to native global folders...");
@@ -93,12 +97,19 @@ function installGlobally() {
         const targetCommandPath = path.join(targetCommandDir, 'SKILL.md');
         fs.copyFileSync(LOCAL_COMMAND_PATH, targetCommandPath);
         
-        // Copy /agy-interview & /grill-blueprint manifest folder
+        // Copy /agy-interview manifest folder
         const targetInterviewPath = path.join(dir, 'agentic-interviewer');
         if (fs.existsSync(targetInterviewPath)) {
           fs.rmSync(targetInterviewPath, { recursive: true, force: true });
         }
         copyFolderRecursiveSync(LOCAL_INTERVIEW_PATH, targetInterviewPath);
+
+        // Copy /grill-blueprint manifest folder
+        const targetBlueprintPath = path.join(dir, 'grill-blueprint');
+        if (fs.existsSync(targetBlueprintPath)) {
+          fs.rmSync(targetBlueprintPath, { recursive: true, force: true });
+        }
+        copyFolderRecursiveSync(LOCAL_BLUEPRINT_PATH, targetBlueprintPath);
 
         console.log(`  🟢 Synced to: ${dir}`);
       } catch (dirErr) {

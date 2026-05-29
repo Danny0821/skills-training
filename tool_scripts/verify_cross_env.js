@@ -33,12 +33,16 @@ try {
     globalSkillsDirs.forEach(dir => {
       const commandFile = path.join(dir, 'generate/SKILL.md');
       const interviewDir = path.join(dir, 'agentic-interviewer');
+      const blueprintDir = path.join(dir, 'grill-blueprint');
 
       if (!fs.existsSync(commandFile)) {
         throw new Error(`🔴 Failed: Manifest missing in directory ${dir}!`);
       }
       if (!fs.existsSync(interviewDir)) {
         throw new Error(`🔴 Failed: Interviewer folder missing in directory ${dir}!`);
+      }
+      if (!fs.existsSync(blueprintDir)) {
+        throw new Error(`🔴 Failed: Blueprint folder missing in directory ${dir}!`);
       }
       console.log(`  ✓ Manifests successfully synchronized inside: ${dir}`);
     });
