@@ -13,3 +13,7 @@
 - Readline block: readline needs standard close cleanup. Keep streams clean.
 - Unified Prompt Architecture (UPA): Use stable XML tags (`<role>`, `<context>`, `<scope_constraints>`) at top. Isolates rules. Future-proofs models. Elevates performance on both frontier and non-frontier models.
 - Registry Test Isolation: Always assign `process.env.AGY_GEN_TEST_DIR` at top of test scripts (e.g. `test_generator.js`, `verify_index_sandbox.js`) before importing scaffolding utilities. Prevents test functions polluting user's real global registry.
+- Slash Commands Folder Alignment: Antigravity 2.0 requires global slash command manifests to be placed inside a structured subfolder containing a `SKILL.md` file (e.g., `~/.gemini/skills/{skill_name}/SKILL.md`) instead of flat files to trigger system-wide client discovery.
+- Single-Trigger Directory Limit: The client parser only registers the first trigger declared in the UPA frontmatter of a folder's `SKILL.md`. Active triggers (e.g., `/interview` vs. `/grill-blueprint`) must have separate directory structures to coexist in autocomplete menus.
+- Hidden Folder npm Packaging Constraints: Avoid storing active command templates inside hidden directories (like `.agent/skills/`) inside the npm package registry. Windows environments throw `lstat` unpack warning errors and directory lock contentions. Always relocate them to accessible top-level folders (such as `command_manifests/`).
+
