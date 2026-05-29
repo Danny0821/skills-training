@@ -84,6 +84,11 @@ agy-gen --remove <skill-name>
 # 6. Unregister skill AND physically purge its folders from disk
 # (purges are restricted strictly to files inside the global ~/.gemini/config/agy-gen/ path)
 agy-gen --remove <skill-name> --purge
+
+# 7. Natively install and register slash commands globally to all Antigravity instances
+agy-gen --install
+# Or
+agy-gen -i
 ```
 
 ---

@@ -28,6 +28,7 @@ function printHelp() {
 Usage: agy-gen [options]
 
 Options:
+  -i, --install          Synchronize slash command manifests globally to all Antigravity instances
   -l, --list             List all globally registered skills in agy-gen index
   -s, --search <term>    Fuzzy search for registered skills by name or tag
   -c, --scan <path>      Scan a directory recursively to discover and register skills
@@ -62,6 +63,7 @@ function printSkillEntry(skill, index) {
  */
 function parseCliArgs(args) {
   const options = {
+    install: false,
     list: false,
     search: null,
     scan: null,
@@ -77,6 +79,8 @@ function parseCliArgs(args) {
 
     if (arg === '--help' || arg === '-h') {
       options.help = true;
+    } else if (arg === '--install' || arg === '-i') {
+      options.install = true;
     } else if (arg === '--list' || arg === '-l') {
       options.list = true;
     } else if (arg === '--search' || arg === '-s') {
@@ -112,6 +116,19 @@ async function handleCommands() {
   if (options.help) {
     printHelp();
     process.exit(0);
+  }
+
+  // 1.2 Install Command
+  if (options.install) {
+    const installPath = path.resolve(__dirname, '../scripts/install_global.js');
+    const installUrl = pathToFileURL(installPath).href;
+    try {
+      await import(installUrl);
+      process.exit(0);
+    } catch (err) {
+      console.error("🔴 Global installation failed:", err.message);
+      process.exit(1);
+    }
   }
 
   // 1.5 Blueprint Command
