@@ -44,6 +44,14 @@ npm run generate
 npm run test
 ```
 
+### Option C: Global Slash Command Registration (Zero-Keyboard Shortcut)
+You can register the generator globally as a native slash command inside your AI Agent chat environment interface:
+```bash
+# Register the /generate slash command globally on your machine
+npm run install-global
+```
+Once successfully executed, typing `/generate` directly in your chat interface will automatically boot up the guided generator, delivering a zero-keyboard setup experience.
+
 ---
 
 ## 🤖 2. How to Use in Agentic Mode
@@ -57,8 +65,10 @@ When a user pastes a GitHub repository link or points an AI Agent to a folder co
 
 ### 2. Prompting the Agent to Scaffold new Skills
 You can directly command your active coding agent to create custom skill profiles, pre-commit hook rules, or DevTeam systems for you.
-> **Prompt Directive Example:**
-> *"Create a new local-only Security Auditor skill named 'secret-scanner' using agy-gen. Setup advanced Python scanning requirements."*
+* **Via Slash Command:** Simply type `/generate` in your chat interface. The active agent will capture the slash command manifest, execute the underlying generator globally, and guide you through the creation steps programmatically.
+* **Via Prompting:** Send a clear text directive to your agent to invoke `agy-gen` under the hood:
+  > **Prompt Directive Example:**
+  > *"Create a new local-only Security Auditor skill named 'secret-scanner' using agy-gen. Setup advanced Python scanning requirements."*
 
 ### 3. The Self-Improving Telemetry Loop (Autolearner Protocol)
 When an agent is performing software creation or infrastructure tasks under an `agy-gen` skill, it is bound to a closed-loop learning protocol:
