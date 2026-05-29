@@ -533,6 +533,14 @@ jobs:
   }
 
   console.log(`🟢 Skill [${name}] successfully scaffolded!`);
+  if (!isSubSkill) {
+    console.log("\n==================================================================");
+    console.log("👉 QUICK-START GUIDE FOR PAIR PROGRAMMING:");
+    console.log("   1. Point your Antigravity chat client to this folder or import it.");
+    console.log(`   2. Trigger this skill by typing its active context keywords:`);
+    console.log(`      - "${tags}"`);
+    console.log("==================================================================\n");
+  }
 }
 
 /**
@@ -708,6 +716,13 @@ export async function scaffoldSkillSystem(options) {
   }
 
   console.log(`\n🟢 Skill System [${name}] fully scaffolded with ${subSkills.length} sub-agents/skills!`);
+  console.log("\n==================================================================");
+  console.log("👉 QUICK-START GUIDE FOR PAIR PROGRAMMING:");
+  console.log("   1. Open the newly generated project folder in your Antigravity chat client.");
+  console.log("   2. In the chat, type: 'Let's begin the PM backlog coordination phase.'");
+  console.log("   3. Your Product Manager archetype will actively interview you to align on details");
+  console.log("      and design system preferences. Follow their guidance to unblock developers!");
+  console.log("==================================================================\n");
 }
 
 /**
@@ -835,6 +850,12 @@ export async function scaffoldFromBlueprint(blueprintPath, force = false) {
   console.log("\n=====================================================");
   console.log("🎉 Coordinated Multi-Skill Team Scaffolding Completed!");
   console.log("=====================================================");
+  console.log("\n👉 QUICK-START GUIDE FOR PAIR PROGRAMMING:");
+  console.log("   1. Open the newly generated project folder in your Antigravity chat client.");
+  console.log("   2. In the chat, type: 'Let's begin the PM backlog coordination phase.'");
+  console.log("   3. Your Product Manager archetype will actively interview you to align on details");
+  console.log("      and design system preferences. Follow their guidance to unblock developers!");
+  console.log("=====================================================\n");
 }
 
 /**
@@ -871,7 +892,7 @@ export async function main() {
     }
 
     console.log("\nSelect target scope for the generated component:");
-    console.log("  [1] Local (project workspace output directory)");
+    console.log("  [1] Local (project workspace skillsets directory)");
     console.log("  [2] Global (system-wide Antigravity user config directory)");
     const scopeChoice = (await askQuestion("Enter selection (1-2, Default: 1): ")).trim() || '1';
 
@@ -887,7 +908,7 @@ export async function main() {
       }
       console.log(`Global scope selected. Target path: ${targetDir}`);
     } else {
-      const targetBase = (await askQuestion("Enter target output folder path (Default: ./output): ")).trim() || './output';
+      const targetBase = (await askQuestion("Enter target output folder path (Default: ./skillsets): ")).trim() || './skillsets';
       targetDir = path.resolve(process.cwd(), targetBase, name);
     }
 
