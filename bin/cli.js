@@ -52,17 +52,61 @@ function printSkillEntry(skill, index) {
   }
 }
 
+/**
+ * Zero-dependency option parser for command-line arguments.
+ * Parses flags and mapped string values.
+ * @param {Array<string>} args - Command-line argument array.
+ * @returns {Object} Parsed option parameters.
+ */
+function parseCliArgs(args) {
+  const options = {
+    list: false,
+    search: null,
+    scan: null,
+    remove: null,
+    purge: false,
+    help: false
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+
+    if (arg === '--help' || arg === '-h') {
+      options.help = true;
+    } else if (arg === '--list' || arg === '-l') {
+      options.list = true;
+    } else if (arg === '--search' || arg === '-s') {
+      options.search = args[i + 1] || '';
+      i++; // Skip next argument
+    } else if (arg === '--scan' || arg === '-c') {
+      options.scan = args[i + 1] || '.';
+      // Check if next arg is another option or empty
+      if (args[i + 1] && !args[i + 1].startsWith('-')) {
+        i++; // Skip next argument
+      }
+    } else if (arg === '--remove' || arg === '-r') {
+      options.remove = args[i + 1] || '';
+      i++; // Skip next argument
+    } else if (arg === '--purge') {
+      options.purge = true;
+    }
+  }
+
+  return options;
+}
+
 async function handleCommands() {
   const args = process.argv.slice(2);
+  const options = parseCliArgs(args);
 
   // 1. Help Command
-  if (args.includes('--help') || args.includes('-h')) {
+  if (options.help) {
     printHelp();
     process.exit(0);
   }
 
   // 2. List Command
-  if (args.includes('--list') || args.includes('-l')) {
+  if (options.list) {
     console.log("\n==================================================================");
     console.log("             Globally Registered Antigravity Skills               ");
     console.log("==================================================================");
@@ -84,9 +128,8 @@ async function handleCommands() {
   }
 
   // 3. Search Command
-  const searchIndex = args.findIndex(arg => arg === '--search' || arg === '-s');
-  if (searchIndex !== -1) {
-    const term = args[searchIndex + 1];
+  if (options.search !== null) {
+    const term = options.search;
     if (!term) {
       console.error("🔴 Error: Please specify a search term (e.g., agy-gen --search branch).");
       process.exit(1);
@@ -109,13 +152,8 @@ async function handleCommands() {
   }
 
   // 4. Scan Command
-  const scanIndex = args.findIndex(arg => arg === '--scan' || arg === '-c');
-  if (scanIndex !== -1) {
-    let scanPath = args[scanIndex + 1];
-    if (!scanPath) {
-      scanPath = '.'; // Default to current folder
-    }
-
+  if (options.scan !== null) {
+    const scanPath = options.scan;
     const absoluteScanPath = path.resolve(scanPath);
     if (!fs.existsSync(absoluteScanPath)) {
       console.error(`🔴 Error: Target scan folder does not exist at: ${absoluteScanPath}`);
@@ -144,14 +182,13 @@ async function handleCommands() {
   }
 
   // 4.5 Remove Command
-  const removeIndex = args.findIndex(arg => arg === '--remove' || arg === '-r');
-  if (removeIndex !== -1) {
-    const name = args[removeIndex + 1];
+  if (options.remove !== null) {
+    const name = options.remove;
     if (!name) {
       console.error("🔴 Error: Please specify a skill name to remove (e.g. agy-gen --remove go-senior-dev).");
       process.exit(1);
     }
-    const purge = args.includes('--purge');
+    const purge = options.purge;
 
     try {
       console.log(`\n🗑️ Unregistering skill "${name}"...`);

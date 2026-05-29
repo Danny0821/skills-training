@@ -1,0 +1,18 @@
+# Gitleaks Configuration Template
+# Used to ignore large test files, mock data, and specific baseline exclusions.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Global allowlist for testing fixtures and mock credentials"
+paths = [
+    '''output_test/''',
+    '''scratch/''',
+    '''feedback/''',
+    '''codebase-reviews/'''
+]
+regexes = [
+    '''MOCK_VAL''',
+    '''EXAMPLE'''
+]

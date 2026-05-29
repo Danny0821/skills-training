@@ -492,6 +492,23 @@ jobs:
   fs.writeFileSync(workflowPath, workflowContent, 'utf-8');
   console.log(`  🟢 Created Layer 3 Guardrail: .github/workflows/security_scan.yml`);
 
+  // Scaffold global scanner exclusions if Security Auditor archetype is active
+  if (resolvedArchetype === 'auditor') {
+    const gitleaksTmplPath = path.join(TEMPLATE_DIR, 'gitleaks_template.toml');
+    const trivyTmplPath = path.join(TEMPLATE_DIR, 'trivy_template.yaml');
+    
+    if (fs.existsSync(gitleaksTmplPath)) {
+      const gitleaksContent = fs.readFileSync(gitleaksTmplPath, 'utf-8');
+      fs.writeFileSync(path.join(targetDir, 'gitleaks.toml'), gitleaksContent, 'utf-8');
+      console.log(`  🟢 Created Security Exclusions: gitleaks.toml`);
+    }
+    if (fs.existsSync(trivyTmplPath)) {
+      const trivyContent = fs.readFileSync(trivyTmplPath, 'utf-8');
+      fs.writeFileSync(path.join(targetDir, 'trivy.yaml'), trivyContent, 'utf-8');
+      console.log(`  🟢 Created Security Exclusions: trivy.yaml`);
+    }
+  }
+
   // Scaffold Autolearner
   scaffoldAutolearner(targetDir, name, resolvedArchetype, targetScriptLang);
 

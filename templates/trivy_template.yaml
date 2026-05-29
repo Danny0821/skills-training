@@ -1,0 +1,11 @@
+# Trivy Configuration Template
+# Configures Trivy static vulnerability scanning exclusions and ignores.
+
+scan:
+  ignorefile: ".trivyignore"
+  exclude-dirs:
+    - node_modules
+    - output_test
+    - scratch
+    - feedback
+    - codebase-reviews
