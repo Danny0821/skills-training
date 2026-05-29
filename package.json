@@ -9,7 +9,10 @@
   "type": "module",
   "files": [
     "cli_bin",
-    "tool_scripts",
+    "tool_scripts/generate.js",
+    "tool_scripts/index_manager.js",
+    "tool_scripts/install_global.js",
+    "tool_scripts/path_manager.js",
     "templates",
     "command_manifests",
     "package.json",

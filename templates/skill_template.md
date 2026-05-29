@@ -39,6 +39,7 @@ requirements:
   - Do not use hardcoded plaintext credentials (keys, tokens).
   - Limit operations strictly to target workspace and sandbox boundaries.
   - Keep this file under 500 lines. Split domains to references/ if too large.
+  - **Zero-Slop Consent Policy**: NEVER generate mock personal/business data or execute core scripts in ambiguous ("grey") areas without confirming with the user. If requirements are high-level or vague, stop and ask the user targeted questions to obtain explicit consent and specifications first.
   </scope_constraints>
 </instructions>
 

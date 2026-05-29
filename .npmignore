@@ -8,3 +8,8 @@ output/
 
 # Exclude installers to prevent Windows Defender / Antivirus blocks on global .ps1/.sh extraction
 installers/
+
+# Exclude local dev/testing scripts to prevent global NPM package bloat
+tool_scripts/test_*.js
+tool_scripts/verify_*.js
+tool_scripts/simulate_*.js
