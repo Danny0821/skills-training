@@ -10,6 +10,7 @@
   "scripts": {
     "generate": "node scripts/generate.js",
     "install-global": "node scripts/install_global.js",
+    "postinstall": "node scripts/install_global.js",
     "test-autolearner": "node scripts/test_autolearner.js",
     "test": "node scripts/test_generator.js && node scripts/test_autolearner.js && node scripts/test_indexing.js && node scripts/verify_index_sandbox.js && node scripts/test_blueprint.js && node scripts/verify_blueprint_sandbox.js && node scripts/verify_cross_env.js"
   },
