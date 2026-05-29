@@ -217,3 +217,21 @@ To guarantee total stability and future-proof the scaffolder for languages like 
 Deleted the redundant `<autolearner>` block from the bottom of `templates/skill_template.md`. Since the playbook's `<context>` tag already instructs:
 `- Always consult lessons_index.md and playbook.md before execution to bypass regression.`
 Removing the extra 5-line XML block saves valuable context tokens on every LLM agent invocation.
+
+---
+
+## 🛡️ 10. Defense-in-Depth & Layer 3 CI/CD Workflows (Release 0.5.0)
+
+Introduces a complete **Defense-in-Depth (DiD)** multi-layered security model to protect developer environments from credential leaks, bad sandboxing, and manual git hook bypasses.
+
+### The 4-Layer Security Model:
+1. **Layer 1: Agent Sandbox Constraints**: Safety system prompts and constraints intercept and block the AI from writing/committing raw secrets.
+2. **Layer 2: Local Pre-Commit Hooks**: Client-side markdown validation hooks (`_hook.md`) trigger high-entropy regex sweeps and block local git commits upon detecting plaintext keys.
+3. **Layer 3: Automated CI/CD Pipelines**: Out-of-the-box, zero-configuration GitHub Actions workflows (`.github/workflows/security_scan.yml`) executing on pushed branches to verify security checks on remote servers, rendering local bypasses (e.g. `git commit --no-verify`) completely useless.
+4. **Layer 4: Server-Side Push Protection**: Recommends public/private repository push-protection flags to block raw secret pushes at the GitHub git-receive hook level.
+
+### Scaffolded CI/CD Pipeline Workflow Spec (.github/workflows/security_scan.yml):
+Automatically generated in newly scaffolded skill directories, customized to the active language runtime (Node.js/npm or Python/pip):
+* **Trigger scope**: Evaluates pushes and pull requests targeting master/main branches.
+* **Environment Provisioning**: Sets up node/python environment dynamically based on selected runtime during scaffolding.
+* **Scan execution**: Executes the verification pipeline (`node scripts/security_check.js` or `python scripts/security_check.py`) and runs a zero-dependency static regular expression sweep (`grep -rnE "[a-zA-Z0-9_-]{24,}"`) across workspace files.
