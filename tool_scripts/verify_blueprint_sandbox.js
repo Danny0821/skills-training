@@ -89,7 +89,7 @@ async function run() {
   // 2. Execute CLI with --blueprint
   console.log("\n🚀 Step 2: Executing CLI with --blueprint flag...");
   try {
-    const cmd = `node "${path.resolve(__dirname, '../bin/cli.js')}" --blueprint "${blueprintPath}"`;
+    const cmd = `node "${path.resolve(__dirname, '../cli_bin/cli.js')}" --blueprint "${blueprintPath}"`;
     console.log(`  Running: ${cmd}`);
     
     // We redirect process env to isolate global registry file
@@ -150,7 +150,7 @@ async function run() {
   // 4. Test Overwrite Protection (Safety Protocol)
   console.log("\n🔒 Step 4: Running CLI again without --force to test Overwrite Protection...");
   try {
-    const cmd = `node "${path.resolve(__dirname, '../bin/cli.js')}" --blueprint "${blueprintPath}"`;
+    const cmd = `node "${path.resolve(__dirname, '../cli_bin/cli.js')}" --blueprint "${blueprintPath}"`;
     execSync(cmd, { 
       env: { ...process.env, AGY_GEN_TEST_DIR: REGISTRY_DIR },
       stdio: 'ignore' 
@@ -166,7 +166,7 @@ async function run() {
   // 5. Test Force Override Option
   console.log("\n⚡ Step 5: Running CLI again WITH --force override flag...");
   try {
-    const cmd = `node "${path.resolve(__dirname, '../bin/cli.js')}" --blueprint "${blueprintPath}" --force`;
+    const cmd = `node "${path.resolve(__dirname, '../cli_bin/cli.js')}" --blueprint "${blueprintPath}" --force`;
     execSync(cmd, { 
       env: { ...process.env, AGY_GEN_TEST_DIR: REGISTRY_DIR },
       stdio: 'ignore' 

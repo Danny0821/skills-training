@@ -15,7 +15,7 @@ console.log("=====================================================\n");
 try {
   // 1. Run the global installer to compile and copy launchers
   console.log("🚀 Executing global command installer...");
-  execSync(`node "${path.join(PACKAGE_ROOT, 'scripts/install_global.js')}"`, { stdio: 'inherit' });
+  execSync(`node "${path.join(PACKAGE_ROOT, 'tool_scripts/install_global.js')}"`, { stdio: 'inherit' });
 
   // 2. Assertions for Windows Host
   if (process.platform === 'win32') {

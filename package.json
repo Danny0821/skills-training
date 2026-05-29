@@ -1,15 +1,15 @@
 {
   "name": "antigravity-generator",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "Premium security-first, Caveman-styled skill generator for Antigravity 2.0.",
-  "main": "scripts/generate.js",
+  "main": "tool_scripts/generate.js",
   "bin": {
-    "antigravity-gen": "./bin/cli.js"
+    "antigravity-gen": "./cli_bin/cli.js"
   },
   "type": "module",
   "files": [
-    "bin/",
-    "scripts/",
+    "cli_bin/",
+    "tool_scripts/",
     "templates/",
     "command_manifests/",
     "package.json",
@@ -18,11 +18,11 @@
     "lessons.md"
   ],
   "scripts": {
-    "generate": "node scripts/generate.js",
-    "install-global": "node scripts/install_global.js",
-    "postinstall": "node -e \"setTimeout(() => { const fs=require('fs'); if(fs.existsSync('scripts/install_global.js')) { require('child_process').execSync('node scripts/install_global.js', {stdio:'inherit'}); } }, 1000)\"",
-    "test-autolearner": "node scripts/test_autolearner.js",
-    "test": "node scripts/test_generator.js && node scripts/test_autolearner.js && node scripts/test_indexing.js && node scripts/verify_index_sandbox.js && node scripts/test_blueprint.js && node scripts/verify_blueprint_sandbox.js && node scripts/verify_cross_env.js"
+    "generate": "node tool_scripts/generate.js",
+    "install-global": "node tool_scripts/install_global.js",
+    "postinstall": "node -e \"setTimeout(() => { const fs=require('fs'); if(fs.existsSync('tool_scripts/install_global.js')) { require('child_process').execSync('node tool_scripts/install_global.js', {stdio:'inherit'}); } }, 1000)\"",
+    "test-autolearner": "node tool_scripts/test_autolearner.js",
+    "test": "node tool_scripts/test_generator.js && node tool_scripts/test_autolearner.js && node tool_scripts/test_indexing.js && node tool_scripts/verify_index_sandbox.js && node tool_scripts/test_blueprint.js && node tool_scripts/verify_blueprint_sandbox.js && node tool_scripts/verify_cross_env.js"
   },
   "keywords": [
     "antigravity",

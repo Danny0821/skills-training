@@ -14,7 +14,7 @@
 import { fileURLToPath, pathToFileURL } from 'url';
 import path from 'path';
 import fs from 'fs';
-import { loadIndex, searchSkills, scanWorkspace, unregisterSkill } from '../scripts/index_manager.js';
+import { loadIndex, searchSkills, scanWorkspace, unregisterSkill } from '../tool_scripts/index_manager.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -120,7 +120,7 @@ async function handleCommands() {
 
   // 1.2 Install Command
   if (options.install) {
-    const installPath = path.resolve(__dirname, '../scripts/install_global.js');
+    const installPath = path.resolve(__dirname, '../tool_scripts/install_global.js');
     const installUrl = pathToFileURL(installPath).href;
     try {
       await import(installUrl);
@@ -146,7 +146,7 @@ async function handleCommands() {
     }
 
     // Dynamic import to execute scaffoldFromBlueprint in scripts/generate.js
-    const generatePath = path.resolve(__dirname, '../scripts/generate.js');
+    const generatePath = path.resolve(__dirname, '../tool_scripts/generate.js');
     const generateUrl = pathToFileURL(generatePath).href;
 
     try {
@@ -263,7 +263,7 @@ async function handleCommands() {
   }
 
   // 5. Default Fallback: Boot up the interactive menu from scripts/generate.js
-  const generatePath = path.resolve(__dirname, '../scripts/generate.js');
+  const generatePath = path.resolve(__dirname, '../tool_scripts/generate.js');
   const generateUrl = pathToFileURL(generatePath).href;
 
   import(generateUrl).then((module) => {

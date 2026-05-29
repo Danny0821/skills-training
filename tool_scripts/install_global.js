@@ -113,7 +113,7 @@ function installGlobally() {
         fs.mkdirSync(GLOBAL_BIN_DIR, { recursive: true });
       }
 
-      const cliPath = path.join(PACKAGE_ROOT, 'bin/cli.js');
+      const cliPath = path.join(PACKAGE_ROOT, 'cli_bin/cli.js');
       const cmdLauncherContent = `@echo off\nnode "${cliPath}" %*`;
       const ps1LauncherContent = `node "${cliPath}" $args`;
 

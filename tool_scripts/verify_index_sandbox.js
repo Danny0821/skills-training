@@ -21,7 +21,7 @@ const RUN_ID = Date.now() + Math.random().toString(36).substring(2, 7);
 const SANDBOX_REGISTRY_DIR = path.resolve(__dirname, `../output_test/autolearner-test-workspace/sandbox-registry-${RUN_ID}`);
 process.env.AGY_GEN_TEST_DIR = SANDBOX_REGISTRY_DIR;
 const SOURCE_SANDBOX_DIR = path.resolve(__dirname, `../output_test/autolearner-test-workspace/sandbox-project-${RUN_ID}`);
-const CLI_PATH = path.resolve(__dirname, '../bin/cli.js');
+const CLI_PATH = path.resolve(__dirname, '../cli_bin/cli.js');
 
 function cleanRegistry() {
   try {
