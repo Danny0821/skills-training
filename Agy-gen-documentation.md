@@ -12,7 +12,7 @@ agy-gen is a premium, zero-dependency skill-engine, hook-rule, and multi-agent s
 ### Workspace Footprint Map
 ```mermaid
 graph TD
-    UserApp[c:/Users/Daniel/...] --> LocalWorkspace[Target Project Folder/]
+    UserApp[Workspace Path/...] --> LocalWorkspace[Target Project Folder/]
     LocalWorkspace --> LocalSkill[skills/my-skill/]
     LocalSkill --> SKILL_MD[SKILL.md - Playbook]
     LocalSkill --> AL_Index[lessons_index.md - Bug Index]
