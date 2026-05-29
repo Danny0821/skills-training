@@ -456,6 +456,42 @@ if (!verifyEnvironment()) {
     console.log(`  🟢 Created: evals/evals.json`);
   }
 
+  // Scaffold Layer 3 (CI/CD GitHub Actions Security Workflow) for Defense-in-Depth
+  ensureDirectory(path.join(targetDir, '.github/workflows'));
+  const workflowPath = path.join(targetDir, '.github/workflows/security_scan.yml');
+  const workflowContent = `name: Security and Guardrails Scan
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up ${targetScriptLang === 'py' ? 'Python' : 'Node.js'}
+      uses: actions/${targetScriptLang === 'py' ? 'setup-python@v5' : 'setup-node@v4'}
+      with:
+        ${targetScriptLang === 'py' ? 'python-version: \'3.11\'' : 'node-version: \'20\''}
+
+    - name: Run Credentials & Sandboxing Auditing
+      run: |
+        ${targetScriptLang === 'py' ? 'python scripts/security_check.py' : 'node scripts/security_check.js'}
+
+    - name: Run Secret Leak Static Scan
+      run: |
+        # Assert no plaintext secrets match high-entropy strings, excluding standard workflows & files
+        ! grep -rnE "[a-zA-Z0-9_-]{24,}" --exclude-dir=node_modules --exclude-dir=.git --exclude=.github/workflows/security_scan.yml .
+`;
+  fs.writeFileSync(workflowPath, workflowContent, 'utf-8');
+  console.log(`  🟢 Created Layer 3 Guardrail: .github/workflows/security_scan.yml`);
+
   // Scaffold Autolearner
   scaffoldAutolearner(targetDir, name, resolvedArchetype, targetScriptLang);
 
