@@ -15,48 +15,36 @@ Rather than writing unstructured playbooks that lead to "AI slop" or context con
 
 ## 🚀 1. Installation & Quick Start
 
-Run instantly without local installation, or clone the repository to run interactive setups.
+Run instantly system-wide via a global installation, or clone the repository to run interactive setups locally.
 
-### Option A: Direct Executable (`npx` One-Liner)
-Run the generator directly from the remote GitHub repository using `npx`:
+### Option A: Global Installation (Recommended)
+Install the generator globally directly from GitHub to configure both the system-wide CLI and native slash commands instantly:
 ```bash
-# Launch the interactive guided generator CLI
-npx -y github:Danny0821/skills-training
-
-# Query globally cataloged skills across your computer
-npx -y github:Danny0821/skills-training --list
-
-# Fuzzy search registered skills by tags or keywords
-npx -y github:Danny0821/skills-training --search python
+# Install system-wide CLI & register all native slash commands globally
+npm install -g github:Danny0821/skills-training#master
 ```
+> [!NOTE]
+> This command automatically triggers a `postinstall` synchronization, linking `/generate`, `/interview`, and `/grill-blueprint` native slash commands directly into your AI Agent chat environment configuration directories, delivering a zero-keyboard setup experience.
 
 ### Option B: Local Setup & Development
-Clone the repository, configure standard parameters, and execute scripts locally:
+If you plan to customize templates or contribute to `agy-gen`, clone the repository and run interactive setups locally:
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/Danny0821/skills-training.git
 cd skills-training
 
-# Launch the interactive guided CLI
+# 2. Run setup
+npm install
+
+# 3. Launch the interactive guided CLI locally
 npm run generate
 
-# Run the programmatic unit and E2E sandbox verification tests
+# 4. (Optional) Sync slash commands globally from your local clone
+npm run install-global
+
+# 5. Run the unit and E2E verification tests
 npm run test
 ```
-
-### Option C: Global Slash Command Registration (Zero-Keyboard Shortcut)
-You can register the generator globally to enable native `/generate`, `/interview`, and `/grill-blueprint` slash commands inside your AI Agent chat environment interface:
-
-#### Method 1: Instant One-Liner (No repository clone required)
-```bash
-npx -y github:Danny0821/skills-training --install
-```
-
-#### Method 2: Local Project Directory (If cloned locally)
-```bash
-npm run install-global
-```
-Once successfully executed, typing `/generate` directly in your chat interface will automatically boot up the guided generator, delivering a zero-keyboard setup experience.
 
 ---
 
