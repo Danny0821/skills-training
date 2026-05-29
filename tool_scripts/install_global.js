@@ -139,4 +139,4 @@ function installGlobally() {
   }
 }
 
-installGlobally();
+setTimeout(installGlobally, 1000);
