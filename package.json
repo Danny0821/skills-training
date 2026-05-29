@@ -11,7 +11,7 @@
     "bin/",
     "scripts/",
     "templates/",
-    ".agent/",
+    "manifests/",
     "package.json",
     "README.md",
     "SKILL.md",

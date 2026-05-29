@@ -31,8 +31,8 @@ const GLOBAL_SKILLS_DIRS = [
 const GLOBAL_BIN_DIR = path.resolve(os.homedir(), '.gemini/config/bin');
 
 // Source paths relative to package root (supports npx and local runs)
-const LOCAL_COMMAND_PATH = path.join(PACKAGE_ROOT, '.agent/skills/generate.md');
-const LOCAL_INTERVIEW_PATH = path.join(PACKAGE_ROOT, '.agent/skills/agentic-interviewer');
+const LOCAL_COMMAND_PATH = path.join(PACKAGE_ROOT, 'manifests/skills/generate.md');
+const LOCAL_INTERVIEW_PATH = path.join(PACKAGE_ROOT, 'manifests/skills/agentic-interviewer');
 
 /**
  * Recursively copies a directory to a target destination in zero-dependency Node.js.
