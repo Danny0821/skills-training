@@ -2,6 +2,9 @@
 
 > Premium, zero-dependency security-first scaffolder for Antigravity 2.0. Converts natural language developer intents into production-ready, isolated Skills, Agent Hooks, standalone Agent Profiles, and Coordinated Skill Systems.
 
+> [!WARNING]
+> **Active Development (Alpha Status)**: This repository represents an early version under active, rapid development. Architectural specifications, templates, CLI flags, and coordinate playbooks are subject to major breaking changes in future releases.
+
 ---
 
 ## 🚀 1. Installation & Quick Start
