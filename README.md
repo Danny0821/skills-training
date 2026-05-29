@@ -50,23 +50,23 @@ npm run test
 
 ## 🤖 2. How to Use in Agentic Mode
 
-`agy-gen` is natively designed to be utilized and triggered by **AI Coding Agents** (such as Gemini, Antigravity, or other advanced coding assistants) operating in your local development workspace.
+`antigravity-gen` is natively designed to be utilized and triggered by **AI Coding Agents** (such as Gemini, Antigravity, or other advanced coding assistants) operating in your local development workspace.
 
 ### 1. Intercepting a Shared Skill Workspace
-When a user pastes a GitHub repository link or points an AI Agent to a folder containing a skill scaffolded by `agy-gen`, the primary `SKILL.md` file contains UPA-aligned onboarding manifests.
+When a user pastes a GitHub repository link or points an AI Agent to a folder containing a skill scaffolded by `antigravity-gen`, the primary `SKILL.md` file contains UPA-aligned onboarding manifests.
 * The Agent automatically recognizes the generator directory layout.
 * It will immediately initiate a jargon-free, friendly onboarding sequence to guide you through workspace commands.
 
 ### 2. Prompting the Agent to Scaffold new Skills
 You can directly command your active coding agent to create custom skill profiles, pre-commit hook rules, or DevTeam systems for you.
 * **Via Slash Command:** Simply type `/generate` in your chat interface. The active agent will capture the slash command manifest, execute the underlying generator globally, and guide you through the creation steps programmatically.
-* **Via Conversational Onboarding:** Type `/interview` in your chat interface. The dedicated `agentic-interviewer` skill will boot up, lead you through a friendly, jargon-free conversational interview about your project requirements, synthesize a team blueprint JSON, and scaffold it automatically.
-* **Via Prompting:** Send a clear text directive to your agent to invoke `agy-gen` under the hood:
+* **Via Conversational Onboarding:** Type `/interview` or `/grill-blueprint` in your chat interface. The dedicated `agentic-interviewer` or `grill-blueprint` skill will boot up, lead you through a friendly, jargon-free conversational interview about your project requirements, synthesize a team blueprint JSON, and scaffold it automatically inside your local `./skillsets/` workspace.
+* **Via Prompting:** Send a clear text directive to your agent to invoke `antigravity-gen` under the hood:
   > **Prompt Directive Example:**
-  > *"Create a new local-only Security Auditor skill named 'secret-scanner' using agy-gen. Setup advanced Python scanning requirements."*
+  > *"Create a new local-only Security Auditor skill named 'secret-scanner' using antigravity-gen. Setup advanced Python scanning requirements."*
 
 ### 3. The Self-Improving Telemetry Loop (Autolearner Protocol)
-When an agent is performing software creation or infrastructure tasks under an `agy-gen` skill, it is bound to a closed-loop learning protocol:
+When an agent is performing software creation or infrastructure tasks under an `antigravity-gen` skill, it is bound to a closed-loop learning protocol:
 1. **Regression Prevention:** Before beginning any code write or build action, the agent's XML instructions mandate that it reads `lessons_index.md` (Telemetry Index) and `playbook.md` (Telemetry Playbook) inside the skill folder to check for historical bugs or OS workarounds.
 2. **Failure Logging:** If a sandbox run, build test, or security pre-commit validation fails, the agent writes the detailed failure context and fix criteria directly into the playbook, making it dynamically smarter for all future tasks.
 
@@ -74,7 +74,7 @@ When an agent is performing software creation or infrastructure tasks under an `
 
 ## ⚙️ 3. CLI Command & Parameters Reference
 
-`agy-gen` operates as an interactive guided wizard or via direct query command-line parameters:
+`antigravity-gen` operates as an interactive guided wizard or via direct query command-line parameters:
 
 ```bash
 # 1. List all globally cataloged skills across projects
@@ -183,6 +183,7 @@ Scaffolded skills conform strictly to the **Unified Prompt Architecture (UPA)**,
 1. **Credentials Firewall**: Plain-text passwords, tokens, or keys are scanned and completely banned. All templates default securely to env variables.
 2. **Directory Purge Shield**: The `--purge` command deletes physical directories *only* if they reside inside the global user configuration path (`~/.gemini/config/`). Local developer project workspaces are structurally protected from accidental deletions.
 3. **Atomic Registry Writes**: Central database indexes are written to temporary files first (`.tmp`) and then renamed, eliminating registry corruption.
+4. **Cross-Platform Resilient Verification**: Scaffolded script engines (`security_check.js` / `security_check.py`) feature platform-agnostic environment fallbacks (e.g. searching Node `os.platform()` paths or executing `python3` $\rightarrow$ `python` $\rightarrow$ `py -3` fallback checks on Windows) to prevent environment execution crashes.
 
 ---
 
