@@ -60,7 +60,7 @@ async function runTests() {
     assertExists(path.join(systemDir, 'skills/python-audit/SKILL.md'));
     assertExists(path.join(systemDir, 'skills/python-audit/lessons_index.md'));
     assertExists(path.join(systemDir, 'skills/python-audit/playbook.md'));
-    assertExists(path.join(systemDir, 'skills/python-audit/scripts/security_check.js'));
+    assertExists(path.join(systemDir, 'skills/python-audit/scripts/security_check.py'));
     assertExists(path.join(systemDir, 'skills/python-audit/evals/evals.json'));
     assertExists(path.join(systemDir, 'skills/python-audit/references'));
 

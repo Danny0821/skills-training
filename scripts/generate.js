@@ -66,15 +66,69 @@ function ensureDirectory(dirPath) {
 }
 
 /**
+ * Dynamic Telemetry Registry with Safe 3-Tier Fallback
+ * Maps archetype and language stacks to specific, isolated telemetry/playbook templates.
+ */
+export const TELEMETRY_REGISTRY = {
+  'developer:js': {
+    lessons: 'lessons/developer_js_lessons.md',
+    playbook: 'playbooks/developer_js_playbook.md'
+  },
+  'developer:py': {
+    lessons: 'lessons/developer_py_lessons.md',
+    playbook: 'playbooks/developer_py_playbook.md'
+  },
+  'architect': {
+    lessons: 'lessons/architect_lessons.md',
+    playbook: 'playbooks/architect_playbook.md'
+  },
+  'pm': {
+    lessons: 'lessons/pm_lessons.md',
+    playbook: 'playbooks/pm_playbook.md'
+  },
+  'devops': {
+    lessons: 'lessons/devops_lessons.md',
+    playbook: 'playbooks/devops_playbook.md'
+  },
+  'qa': {
+    lessons: 'lessons/qa_lessons.md',
+    playbook: 'playbooks/qa_playbook.md'
+  },
+  'auditor': {
+    lessons: 'lessons/auditor_lessons.md',
+    playbook: 'playbooks/auditor_playbook.md'
+  },
+  'default': {
+    lessons: 'lessons/default_lessons.md',
+    playbook: 'playbooks/default_playbook.md'
+  }
+};
+
+/**
  * Helper to scaffold the Autolearner Dual-File Protocol.
- * Creates lessons_index.md and playbook.md inside the target skill directory.
+ * Creates lessons_index.md and playbook.md inside the target skill directory
+ * using a dynamic, stack-specific telemetry registry with safe 3-tiered fallback.
  * @param {string} targetDir Base directory of the skill.
  * @param {string} componentName Name of the component.
+ * @param {string} archetype Archetype profile of the skill.
+ * @param {string} scriptLanguage Active script language stack.
  */
-function scaffoldAutolearner(targetDir, componentName) {
+export function scaffoldAutolearner(targetDir, componentName, archetype = 'default', scriptLanguage = 'js') {
   try {
-    const indexTmpl = fs.readFileSync(path.join(TEMPLATE_DIR, 'lessons_index_template.md'), 'utf-8');
-    const playbookTmpl = fs.readFileSync(path.join(TEMPLATE_DIR, 'playbook_template.md'), 'utf-8');
+    const registryKey = `${archetype}:${scriptLanguage}`;
+    const target = TELEMETRY_REGISTRY[registryKey]
+                || TELEMETRY_REGISTRY[archetype]
+                || TELEMETRY_REGISTRY['default'];
+
+    const indexTmplPath = path.join(TEMPLATE_DIR, target.lessons);
+    const playbookTmplPath = path.join(TEMPLATE_DIR, target.playbook);
+
+    if (!fs.existsSync(indexTmplPath) || !fs.existsSync(playbookTmplPath)) {
+      throw new Error(`Templates not found for resolved key: ${registryKey}`);
+    }
+
+    const indexTmpl = fs.readFileSync(indexTmplPath, 'utf-8');
+    const playbookTmpl = fs.readFileSync(playbookTmplPath, 'utf-8');
 
     const replacements = { NAME: componentName };
 
@@ -89,8 +143,8 @@ function scaffoldAutolearner(targetDir, componentName) {
       'utf-8'
     );
 
-    console.log(`  🟢 Created Autolearner Index: lessons_index.md`);
-    console.log(`  🟢 Created Autolearner Playbook: playbook.md`);
+    console.log(`  🟢 Created Autolearner Index: lessons_index.md (${target.lessons})`);
+    console.log(`  🟢 Created Autolearner Playbook: playbook.md (${target.playbook})`);
   } catch (err) {
     console.error(`  🔴 Failed to scaffold Autolearner files: ${err.message}`);
   }
@@ -401,7 +455,7 @@ verifyEnvironment();
   }
 
   // Scaffold Autolearner
-  scaffoldAutolearner(targetDir, name);
+  scaffoldAutolearner(targetDir, name, resolvedArchetype, targetScriptLang);
 
   // Register skill to global index
   if (!localOnly) {
@@ -564,7 +618,7 @@ export async function scaffoldSkillSystem(options) {
   ensureDirectory(path.join(targetDir, 'agents'));
 
   // Scaffold top-level Autolearner for the whole System
-  scaffoldAutolearner(targetDir, name);
+  scaffoldAutolearner(targetDir, name, 'pm', 'js');
 
   // Recursively scaffold each sub-skill
   for (const childSkill of subSkills) {

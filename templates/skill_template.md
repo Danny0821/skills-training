@@ -45,9 +45,3 @@ requirements:
 <review_checks>
 {{REVIEW_CHECKS}}
 </review_checks>
-
-<autolearner>
-- Check lessons_index.md for known bugs/lessons.
-- Check playbook.md for OS workarounds.
-- Document new errors encountered with coordinates in lessons_index.md.
-</autolearner>

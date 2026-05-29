@@ -212,12 +212,14 @@ function runSandboxVerification() {
       throw new Error("Advanced skill was not registered in the global catalog.");
     }
     
-    // 9. E2E Greenfield Multi-Archetype Self-Coordination Check (DMCP & 6 Archetypes)
-    console.log("\n🧪 Step 9: Verifying dynamic Archetype Classification and DMCP Playbook isolation...");
+    // 9. E2E Greenfield Multi-Archetype Self-Coordination & Stack-Specific Telemetry Check (DMCP & Archetypes)
+    console.log("\n🧪 Step 9: Verifying dynamic Archetype Classification, DMCP Playbook isolation, and Telemetry Registries...");
     const architectSkillDir = path.join(SOURCE_SANDBOX_DIR, 'figma-to-html-wireframes');
     const developerSkillDir = path.join(SOURCE_SANDBOX_DIR, 'react-user-dashboard');
+    const pythonSkillDir = path.join(SOURCE_SANDBOX_DIR, 'python-audit-api');
+    const cppSkillDir = path.join(SOURCE_SANDBOX_DIR, 'cpp-core-optimizer');
 
-    // Scaffolding Architect Skill
+    // A. Scaffold Architect Skill
     scaffoldSkill({
       name: 'figma-to-html-wireframes',
       description: 'Design wireframes and architectural blueprints for frontend.',
@@ -227,7 +229,7 @@ function runSandboxVerification() {
       localOnly: true
     });
 
-    // Scaffolding Developer Skill
+    // B. Scaffold Developer JS Skill
     scaffoldSkill({
       name: 'react-user-dashboard',
       description: 'Build React components and frontend interface.',
@@ -237,7 +239,31 @@ function runSandboxVerification() {
       localOnly: true
     });
 
-    // Assert figma-to-html-wireframes (Architect Archetype) contains correct playbook and DMCP
+    // C. Scaffold Developer Python Skill
+    scaffoldSkill({
+      name: 'python-audit-api',
+      description: 'Python FastAPI server security auditor.',
+      tags: 'python, fastapi, auditor, dev',
+      targetDir: pythonSkillDir,
+      creationMode: 'advanced',
+      archetype: 'developer',
+      scriptLanguage: 'py',
+      localOnly: true
+    });
+
+    // D. Scaffold Future Stack Skill to verify Safe Cascade Fallback
+    scaffoldSkill({
+      name: 'cpp-core-optimizer',
+      description: 'High-performance C++ systems optimizer.',
+      tags: 'cpp, systems, performance',
+      targetDir: cppSkillDir,
+      creationMode: 'advanced',
+      archetype: 'developer',
+      scriptLanguage: 'cpp', // Unsupported script stack! Triggers fallback chain
+      localOnly: true
+    });
+
+    // 1. Assert figma-to-html-wireframes (Architect Archetype) contains correct playbook, DMCP, and zero-slop design telemetries
     if (!fs.existsSync(path.join(architectSkillDir, 'SKILL.md'))) {
       throw new Error("Architect skill SKILL.md was not created.");
     }
@@ -251,9 +277,21 @@ function runSandboxVerification() {
     if (!archSkillContent.includes('Choreographed Fallback') || !archSkillContent.includes('You are a Designer/Architect')) {
       throw new Error("Architect skill is missing the correct DMCP handshake guidelines!");
     }
-    console.log("  ✓ Architect skill structurally validated (Zero-Slop, Pure Blueprinting, correct DMCP).");
+    if (archSkillContent.includes('<autolearner>')) {
+      throw new Error("Token Waste: Redundant <autolearner> block found in Architect playbook!");
+    }
 
-    // Assert react-user-dashboard (Developer Archetype) contains correct playbook and DMCP
+    // Assert Architect Telemetry Zero-Slop
+    const archPlaybook = fs.readFileSync(path.join(architectSkillDir, 'playbook.md'), 'utf8');
+    if (!archPlaybook.includes('[SCHEMA_01]') || !archPlaybook.includes('Foreign Key constraints')) {
+      throw new Error("Architect playbook is missing database schema design telemetry!");
+    }
+    if (archPlaybook.includes('process.env') || archPlaybook.includes('readline') || archPlaybook.includes('pytest')) {
+      throw new Error("AI Slop: Architect playbook contains programming stack telemetry!");
+    }
+    console.log("  ✓ Architect skill structurally validated (Zero-Slop, Pure Design Telemetry, correct DMCP).");
+
+    // 2. Assert react-user-dashboard (Developer JS Archetype) contains correct playbook, TDD, and Node-specific telemetry
     if (!fs.existsSync(path.join(developerSkillDir, 'SKILL.md'))) {
       throw new Error("Developer skill SKILL.md was not created.");
     }
@@ -264,8 +302,40 @@ function runSandboxVerification() {
     if (!devSkillContent.includes('Choreographed Fallback') || !devSkillContent.includes('You are a Developer')) {
       throw new Error("Developer skill is missing the correct DMCP handshake guidelines!");
     }
-    console.log("  ✓ Developer skill structurally validated (TDD-Based, correct DMCP).");
-    console.log("  ✓ Multi-Archetype Greenfield self-coordination E2E verified perfectly.");
+    if (devSkillContent.includes('<autolearner>')) {
+      throw new Error("Token Waste: Redundant <autolearner> block found in Developer playbook!");
+    }
+
+    // Assert Developer JS Telemetry
+    const devPlaybook = fs.readFileSync(path.join(developerSkillDir, 'playbook.md'), 'utf8');
+    if (!devPlaybook.includes('[CLI_INPUT_01]') || !devPlaybook.includes('process.env')) {
+      throw new Error("Developer JS playbook is missing Node.js environment telemetry!");
+    }
+    if (devPlaybook.includes('pytest') || devPlaybook.includes('pathlib')) {
+      throw new Error("AI Slop: Developer JS playbook contaminated with Python telemetry!");
+    }
+    console.log("  ✓ Developer JS skill structurally validated (TDD-Based, JS Telemetry, correct DMCP).");
+
+    // 3. Assert python-audit-api (Developer Python) contains correct pure Python telemetry (Zero-Slop regression fix)
+    const pyPlaybook = fs.readFileSync(path.join(pythonSkillDir, 'playbook.md'), 'utf8');
+    if (!pyPlaybook.includes('[TEST_RUNNER_01]') || !pyPlaybook.includes('pytest') || !pyPlaybook.includes('pathlib')) {
+      throw new Error("Developer Python playbook is missing pytest/pathlib telemetry!");
+    }
+    if (pyPlaybook.includes('process.env') || pyPlaybook.includes('readline')) {
+      throw new Error("AI Slop: Developer Python playbook contaminated with Node.js/JS telemetry!");
+    }
+    console.log("  ✓ Developer Python skill structurally validated (TDD-Based, Python Telemetry, zero JS-slop).");
+
+    // 4. Assert future/unsupported language fallback resolves cleanly to default agnostic telemetry
+    const cppPlaybook = fs.readFileSync(path.join(cppSkillDir, 'playbook.md'), 'utf8');
+    if (!cppPlaybook.includes('[OS_PATH_01]') || !cppPlaybook.includes('[ENV_SECRET_01]')) {
+      throw new Error("Fallback cascade failed: C++ skill did not generate default agnostic telemetry!");
+    }
+    if (cppPlaybook.includes('process.env') || cppPlaybook.includes('pytest')) {
+      throw new Error("Fallback cascade failed: Agnostic telemetry contaminated with stack-specific tags!");
+    }
+    console.log("  ✓ Safe Cascade Fallback validated (developer:cpp fell back cleanly to default agnostic telemetry).");
+    console.log("  ✓ Multi-Archetype Greenfield self-coordination and Dynamic Telemetry E2E verified perfectly.");
 
     console.log("\n=====================================================");
     console.log("🎉 E2E Sandbox Registry Verification passed perfectly!");

@@ -81,8 +81,8 @@ function setupTestWorkspace() {
     fs.mkdirSync(TEST_WORKSPACE, { recursive: true });
   }
 
-  const indexTmpl = fs.readFileSync(path.join(TEMPLATES_DIR, 'lessons_index_template.md'), 'utf-8');
-  const playbookTmpl = fs.readFileSync(path.join(TEMPLATES_DIR, 'playbook_template.md'), 'utf-8');
+  const indexTmpl = fs.readFileSync(path.join(TEMPLATES_DIR, 'lessons/developer_js_lessons.md'), 'utf-8');
+  const playbookTmpl = fs.readFileSync(path.join(TEMPLATES_DIR, 'playbooks/developer_js_playbook.md'), 'utf-8');
 
   // Hydrate templates with mock system name
   const replacements = { NAME: 'AutolearnerTestSystem' };

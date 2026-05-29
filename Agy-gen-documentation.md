@@ -190,3 +190,30 @@ Handles team playbooks dynamically based on directory state:
         Code --> QA[QA: E2E Playwright tests]
         Code --> Audit[Auditor: Static OWASP scan]
     ```
+
+---
+
+## 📂 9. Dynamic Telemetry Registries & Safe Fallback Cascade (Release 0.4.3)
+
+Resolves critical "AI Slop" context contamination in telemetry files (`lessons_index.md` & `playbook.md`) and optimizes prompt token density under the Unified Prompt Architecture (UPA).
+
+### A. Dynamic Telemetry Registry (`TELEMETRY_REGISTRY`)
+Every scaffolded skill receives stack-specific telemetry indices and playbooks, preventing cross-language leaks (e.g. Python developers trying to invoke Node's `process.env` in Python files).
+* **Developer JS (`developer:js`)**: Telemetry covering Node.js platform checks (`os.platform()`), path concatenation (`path.join`), credentials loading (`process.env`), and readline streams (`rl.close()`).
+* **Developer Python (`developer:py`)**: Telemetry covering Python's `pathlib.Path`, secure variables extraction (`os.getenv`), secure process runs (`subprocess.run`), and `pytest` module testing checks.
+* **Designer / Architect (`architect`)**: Telemetry covering DDL schemas topological ordering (creating Foreign Key dependencies last) and responsive design layout specifications.
+* **Product Manager (`pm`)**: Telemetry covering backlog milestone priorities (MoSCoW tags) and roadmap creep mitigation.
+* **DevOps (`devops`)**: Telemetry covering container EPERM volume mount blocks and multi-stage optimizations.
+* **QA (`qa`)**: Telemetry covering headless E2E browser timeout extensions and JSON mock payloads.
+* **Auditor (`auditor`)**: Telemetry covering Semgrep static scans exclusions and regex credential scanning boundaries.
+
+### B. Three-Tiered Safe Fallback Resolution Chain
+To guarantee total stability and future-proof the scaffolder for languages like C++, Go, or Rust, `scaffoldAutolearner` cascades through three resolution tiers:
+1. **Target Stack**: Look up `archetype:scriptLanguage` (e.g., `developer:cpp`).
+2. **Archetype Fallback**: Look up `archetype` (e.g., `developer`).
+3. **Global Agnostic Default**: Look up `default` (A safe, technology-agnostic playbook covering general platform paths, standard safety checks, and generic verification scripts).
+
+### C. Prompt Token Optimization
+Deleted the redundant `<autolearner>` block from the bottom of `templates/skill_template.md`. Since the playbook's `<context>` tag already instructs:
+`- Always consult lessons_index.md and playbook.md before execution to bypass regression.`
+Removing the extra 5-line XML block saves valuable context tokens on every LLM agent invocation.
