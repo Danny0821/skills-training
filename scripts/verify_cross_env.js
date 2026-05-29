@@ -31,7 +31,7 @@ try {
 
     // Assert that the command manifests exist in all 4 global paths
     globalSkillsDirs.forEach(dir => {
-      const commandFile = path.join(dir, 'generate.md');
+      const commandFile = path.join(dir, 'generate/SKILL.md');
       const interviewDir = path.join(dir, 'agentic-interviewer');
 
       if (!fs.existsSync(commandFile)) {

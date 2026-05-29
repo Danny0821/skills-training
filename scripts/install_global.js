@@ -79,8 +79,18 @@ function installGlobally() {
           fs.mkdirSync(dir, { recursive: true });
         }
         
-        // Copy /generate manifest
-        const targetCommandPath = path.join(dir, 'generate.md');
+        // Clean up outdated legacy flat generate.md file if present in this folder
+        const legacyFlatFile = path.join(dir, 'generate.md');
+        if (fs.existsSync(legacyFlatFile)) {
+          fs.unlinkSync(legacyFlatFile);
+        }
+
+        // Copy /generate manifest into generate/SKILL.md folder
+        const targetCommandDir = path.join(dir, 'generate');
+        if (!fs.existsSync(targetCommandDir)) {
+          fs.mkdirSync(targetCommandDir, { recursive: true });
+        }
+        const targetCommandPath = path.join(targetCommandDir, 'SKILL.md');
         fs.copyFileSync(LOCAL_COMMAND_PATH, targetCommandPath);
         
         // Copy /agy-interview & /grill-blueprint manifest folder

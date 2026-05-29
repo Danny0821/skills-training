@@ -3,7 +3,7 @@
 # Antigravity 2.0 Global Command Installer (Bash)
 # 
 # Install globally by running this one-liner in your terminal:
-# curl -fsSL https://raw.githubusercontent.com/Daniel/antigravity-generator/master/installers/install.sh | bash
+# curl -fsSL https://raw.githubusercontent.com/Danny0821/skills-training/master/installers/install.sh | bash
 
 set -e
 
@@ -11,7 +11,6 @@ set -e
 CYAN='\033[0;36m'
 YELLOW='\033[1;33m'
 GREEN='\033[0;32m'
-RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo -e "${CYAN}=========================================================${NC}"
@@ -30,46 +29,43 @@ else
     exit 1
 fi
 
-# Verify Git
-if command -v git >/dev/null 2>&1; then
-    gitVer=$(git --version)
-    echo -e "  ✓ Git detected: ${GREEN}$gitVer${NC}"
-else
-    echo -e "  ${YELLOW}⚠️ Git was not detected. Local command cloning is still active but remote npx requires Git.${NC}"
-fi
-
 # 2. Resolve target directories
 echo -e "\n${YELLOW}Step 2: Resolving global directories...${NC}"
-GLOBAL_CONFIG_BASE="$HOME/.gemini/config"
-GLOBAL_SKILLS_BASE="$GLOBAL_CONFIG_BASE/skills"
 
-if [ ! -d "$GLOBAL_SKILLS_BASE" ]; then
-    echo -e "  Creating global skills directory at: $GLOBAL_SKILLS_BASE"
-    mkdir -p "$GLOBAL_SKILLS_BASE"
-fi
-TARGET_PATH="$GLOBAL_SKILLS_BASE/generate.md"
+GLOBAL_SKILLS_DIRS=(
+    "$HOME/.gemini/skills"
+    "$HOME/.gemini/antigravity/skills"
+    "$HOME/.gemini/antigravity-cli/skills"
+    "$HOME/.gemini/config/skills"
+)
 
 # 3. Source manifest deployment
-echo -e "\n${YELLOW}Step 3: Deploying /generate command manifest...${NC}"
+echo -e "\n${YELLOW}Step 3: Deploying command manifests...${NC}"
 
-# Check if we are running inside the local repository
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-LOCAL_MANIFEST="$SCRIPT_DIR/../.agent/skills/generate.md"
+GITHUB_RAW_BASE="https://raw.githubusercontent.com/Danny0821/skills-training/master"
 
-if [ -f "$LOCAL_MANIFEST" ]; then
-    echo -e "  ✓ Local workspace manifest detected. Deploying local copy."
-    cp "$LOCAL_MANIFEST" "$TARGET_PATH"
-else
-    # Fetch from remote GitHub raw repository
-    GITHUB_RAW_URL="https://raw.githubusercontent.com/Daniel/antigravity-generator/master/.agent/skills/generate.md"
-    echo -e "  Fetching manifest from GitHub repository..."
-    curl -fsSL "$GITHUB_RAW_URL" -o "$TARGET_PATH"
-    echo -e "  ✓ Successfully fetched from GitHub raw."
-fi
+for dir in "${GLOBAL_SKILLS_DIRS[@]}"; do
+    echo -e "  Synchronizing manifests to: $dir"
+    mkdir -p "$dir"
+
+    # Clean legacy flat generate.md file
+    rm -f "$dir/generate.md"
+
+    # 3a. Install /generate command
+    mkdir -p "$dir/generate"
+    curl -fsSL "$GITHUB_RAW_BASE/.agent/skills/generate.md" -o "$dir/generate/SKILL.md"
+    echo -e "    ${GREEN}✓ Registered /generate command${NC}"
+
+    # 3b. Install /interview (agentic-interviewer) command
+    mkdir -p "$dir/agentic-interviewer"
+    for file in "SKILL.md" "interview.json" "lessons_index.md" "playbook.md"; do
+        curl -fsSL "$GITHUB_RAW_BASE/.agent/skills/agentic-interviewer/$file" -o "$dir/agentic-interviewer/$file"
+    done
+    echo -e "    ${GREEN}✓ Registered /interview command${NC}"
+done
 
 echo -e "\n${GREEN}=========================================================${NC}"
 echo -e "${GREEN}🟢 Success! System-wide registration complete.${NC}"
-echo -e "📂 Global Command Location: ${NC}$TARGET_PATH"
-echo -e "\n${GREEN}✨ The native slash command is now active globally!${NC}"
-echo -e "${GREEN}👉 You can now type '/generate' in ANY workspace directory on this system.${NC}"
+echo -e "\n${GREEN}✨ The native slash commands are now active globally!${NC}"
+echo -e "${GREEN}👉 You can now type '/generate' or '/interview' inside your agy client.${NC}"
 echo -e "${GREEN}=========================================================${NC}"
