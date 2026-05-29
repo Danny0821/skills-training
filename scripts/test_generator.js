@@ -13,6 +13,7 @@ const __dirname = path.dirname(__filename);
 
 // Root path for output tests
 const TEST_OUTPUT_DIR = path.resolve(__dirname, '../output_test');
+process.env.AGY_GEN_TEST_DIR = path.join(TEST_OUTPUT_DIR, 'test-registry');
 
 function cleanup() {
   if (fs.existsSync(TEST_OUTPUT_DIR)) {

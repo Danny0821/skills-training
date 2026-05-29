@@ -3,10 +3,9 @@ name: "{{NAME}}"
 description: "{{DESCRIPTION}} Make sure to trigger this skill whenever the user mentions {{NAME}}, {{TAGS}}, or related workflows, even if they do not explicitly ask for it."
 version: "0.1.0"
 triggers:
-  - "idea: {{NAME}}"
-  - "context: {{TAGS}}"
+  {{TRIGGERS_LIST}}
 requirements:
-  - "node: >=18"
+  {{REQUIREMENTS_LIST}}
 ---
 
 # SKILL.md — {{NAME}} (Caveman Style)
@@ -43,9 +42,7 @@ requirements:
 </instructions>
 
 <review_checks>
-- Before edit: Scan files for vulnerabilities.
-- Run security test script `scripts/security_check.js` if exists.
-- Stop on critical issue. Ask user before overwrite config.
+{{REVIEW_CHECKS}}
 </review_checks>
 
 <autolearner>

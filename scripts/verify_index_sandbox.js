@@ -18,6 +18,7 @@ const __dirname = path.dirname(__filename);
 
 // Target test registry and source sandbox folders
 const SANDBOX_REGISTRY_DIR = path.resolve(__dirname, '../output_test/autolearner-test-workspace/sandbox-registry');
+process.env.AGY_GEN_TEST_DIR = SANDBOX_REGISTRY_DIR;
 const SOURCE_SANDBOX_DIR = path.resolve(__dirname, '../output_test/autolearner-test-workspace/sandbox-project');
 const CLI_PATH = path.resolve(__dirname, '../bin/cli.js');
 
@@ -56,14 +57,16 @@ function runSandboxVerification() {
       name: 'file-security-scanner',
       description: 'Scan files for credentials and toxic shell commands.',
       tags: 'security, files, audit',
-      targetDir: path.join(SOURCE_SANDBOX_DIR, 'file-security-scanner')
+      targetDir: path.join(SOURCE_SANDBOX_DIR, 'file-security-scanner'),
+      localOnly: true
     });
 
     scaffoldSkill({
       name: 'git-branch-naming-validator',
       description: 'Verify local Git branch names comply with repository conventions.',
       tags: 'git, branch, validation',
-      targetDir: path.join(SOURCE_SANDBOX_DIR, 'git-branch-naming-validator')
+      targetDir: path.join(SOURCE_SANDBOX_DIR, 'git-branch-naming-validator'),
+      localOnly: true
     });
 
     console.log("\n✓ Mock skills scaffolded successfully.\n");
@@ -152,6 +155,58 @@ function runSandboxVerification() {
       throw new Error("Unrelated skill was lost during unregistration.");
     }
     console.log("  ✓ E2E unregistration successfully removed the target skill.");
+
+    // 8. E2E Advanced Mode Skill Creation Check
+    console.log("\n🧪 Step 8: Scaffolding custom skill in Advanced Mode (Python script)...");
+    const advancedSkillDir = path.join(SOURCE_SANDBOX_DIR, 'go-advanced-skill');
+    
+    scaffoldSkill({
+      name: 'go-advanced-skill',
+      description: 'Advanced Go systems optimizer.',
+      tags: 'go, advanced, performance',
+      targetDir: advancedSkillDir,
+      creationMode: 'advanced',
+      customTriggers: ['/audit-go', 'context: golang'],
+      customRequirements: ['go: >=1.20', 'python: >=3.10'],
+      customTasks: ['Audit channel closures', 'Perform escape allocation checks'],
+      customReviews: ['Verify no unsafe blocks', 'Assert clippy warning compliance'],
+      scriptLanguage: 'py' // Python verification script!
+    });
+
+    // Assert files created
+    const skillMdPath = path.join(advancedSkillDir, 'SKILL.md');
+    if (!fs.existsSync(skillMdPath)) {
+      throw new Error("Advanced skill SKILL.md was not created.");
+    }
+    const skillMdContent = fs.readFileSync(skillMdPath, 'utf8');
+    if (!skillMdContent.includes('go: >=1.20') || !skillMdContent.includes('/audit-go')) {
+      throw new Error("Advanced skill SKILL.md is missing custom triggers/requirements.");
+    }
+    if (!skillMdContent.includes('Audit channel closures')) {
+      throw new Error("Advanced skill SKILL.md is missing custom task definitions.");
+    }
+    if (!skillMdContent.includes('Verify no unsafe blocks')) {
+      throw new Error("Advanced skill SKILL.md is missing custom review checks.");
+    }
+
+    // Assert Python verification script exists and is shebang-hardened
+    const pyScriptPath = path.join(advancedSkillDir, 'scripts/security_check.py');
+    if (!fs.existsSync(pyScriptPath)) {
+      throw new Error("Advanced Python verification script was not created.");
+    }
+    const pyContent = fs.readFileSync(pyScriptPath, 'utf8');
+    if (!pyContent.includes('#!/usr/bin/env python3')) {
+      throw new Error("Advanced Python verification script shebang is missing or unhardened.");
+    }
+    console.log("  ✓ Hardened Python verification script generated perfectly.");
+
+    // Assert it appears in the index list
+    const postAdvancedList = runCommandWithEnv('--list');
+    console.log(postAdvancedList);
+    if (!postAdvancedList.includes('go-advanced-skill')) {
+      throw new Error("Advanced skill was not registered in the global catalog.");
+    }
+    console.log("  ✓ Advanced Mode skill creation E2E validated successfully.");
 
     console.log("\n=====================================================");
     console.log("🎉 E2E Sandbox Registry Verification passed perfectly!");

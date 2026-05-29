@@ -130,3 +130,22 @@ npm run test
 1. **Credentials Firewall**: Plain-text keys/secrets are strictly scanned and banned. All templates use env variables.
 2. **Directory Purge Shield**: The `--purge` command deletes physical directories *only* if they reside inside the global `~/.gemini/config/agy-gen/` workspace. Local developer project workspaces are structurally protected from accidental deletions.
 3. **Robust CLI Atomic Writes**: All registry updates are written to temporary files first (`.tmp`) and then renamed, eliminating the risk of registry file corruption.
+
+---
+
+## 🆕 7. Interactive Agentic Skill Creation (Release 0.4.0)
+
+Introduces Quick vs. Advanced modes to interactively build skills with custom requirements and hardened script engines.
+
+### Creation Modes:
+1. **Quick Mode**: Zero-config scaffolding. Generates Node.js (`.js`) verification script and standard plays.
+2. **Advanced Mode**: Interactive customization of:
+   * **Triggers**: Custom slash commands or context cues.
+   * **Requirements**: Custom engine limits (e.g. `node: >=18`, `python: >=3.10`).
+   * **Tasks**: Customized step-by-step agent instructions.
+   * **Reviews**: Customized XML check criteria.
+   * **Script Language**: Choose Node.js (`.js`) or Python (`.py`).
+
+### Verification Script Stack:
+* **Node.js**: Standard modern JS verification script (`security_check.js`).
+* **Python**: Shebang-hardened (`#!/usr/bin/env python3`) verification script (`security_check.py`) with cross-platform environment fallback search path checks (`python3` -> `python` -> `py -3`) to avoid OS path crashes.

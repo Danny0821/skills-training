@@ -1,12 +1,10 @@
 ---
 name: "python-fixer"
-description: "Coordinated skill for python-fixer within the python-security-agency system. Make sure to trigger this skill whenever the user mentions python-fixer, "python-security-agency"
-  - "child-skill", or related workflows, even if they do not explicitly ask for it."
+description: "Coordinated skill for python-fixer within the python-security-agency system. Make sure to trigger this skill whenever the user mentions python-fixer, {{TAGS}}, or related workflows, even if they do not explicitly ask for it."
 version: "0.1.0"
 triggers:
   - "idea: python-fixer"
-  - "context: "python-security-agency"
-  - "child-skill""
+  - "context: python-security-agency, child-skill"
 requirements:
   - "node: >=18"
 ---
@@ -24,8 +22,7 @@ requirements:
 
   <context>
   - Target system: python-fixer
-  - Primary triggers: "python-security-agency"
-  - "child-skill"
+  - Primary triggers: {{TAGS}}
   - Always consult lessons_index.md and playbook.md before execution to bypass regression.
   </context>
 

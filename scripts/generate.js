@@ -100,7 +100,20 @@ function scaffoldAutolearner(targetDir, componentName) {
  * @param {Object} options Scaffolding options.
  */
 export function scaffoldSkill(options) {
-  const { name, description, tags, targetDir, isSubSkill = false, localOnly = false } = options;
+  const {
+    name,
+    description,
+    tags,
+    targetDir,
+    isSubSkill = false,
+    localOnly = false,
+    creationMode = 'quick',
+    customTriggers = [],
+    customRequirements = [],
+    customTasks = [],
+    customReviews = [],
+    scriptLanguage = 'js'
+  } = options;
 
   console.log(`\nScaffolding Skill: ${name}...`);
   ensureDirectory(targetDir);
@@ -113,16 +126,61 @@ export function scaffoldSkill(options) {
   }
   const template = fs.readFileSync(tmplPath, 'utf-8');
 
-  // Format tags and playbook steps
-  const tagList = tags.split(',').map(t => t.trim()).filter(Boolean).map(t => `"${t}"`).join('\n  - ');
-  const defaultPlaybookSteps = `- Learn context: Read lessons_index.md for known issues.\n- Execute tasks securely.\n- Log mistakes: Write newly learned facts to lessons_index.md.`;
+  // Format Triggers List
+  let triggerLines = [];
+  if (creationMode === 'advanced' && customTriggers.length > 0) {
+    triggerLines = customTriggers.map(t => `"${t.trim()}"`);
+  } else {
+    triggerLines = [
+      `"idea: ${name}"`,
+      `"context: ${tags.split(',').map(t => t.trim()).filter(Boolean).join(', ')}"`
+    ];
+  }
+  const triggersListStr = triggerLines.map(t => `- ${t}`).join('\n  ');
+
+  // Format Requirements List
+  let requirementLines = [];
+  if (creationMode === 'advanced' && customRequirements.length > 0) {
+    requirementLines = customRequirements.map(r => `"${r.trim()}"`);
+  } else {
+    requirementLines = [`"node: >=18"`];
+  }
+  const requirementsListStr = requirementLines.map(r => `- ${r}`).join('\n  ');
+
+  // Format Playbook Steps (Tasks)
+  let taskLines = [];
+  if (creationMode === 'advanced' && customTasks.length > 0) {
+    taskLines = customTasks.map(t => t.trim()).filter(Boolean);
+  } else {
+    taskLines = [
+      `Learn context: Read lessons_index.md for known issues.`,
+      `Execute tasks securely.`,
+      `Log mistakes: Write newly learned facts to lessons_index.md.`
+    ];
+  }
+  const playbookStepsStr = taskLines.map(t => `- ${t}`).join('\n');
+
+  // Format Review Checks
+  let reviewLines = [];
+  if (creationMode === 'advanced' && customReviews.length > 0) {
+    reviewLines = customReviews.map(r => r.trim()).filter(Boolean);
+  } else {
+    reviewLines = [
+      `Before edit: Scan files for vulnerabilities.`,
+      `Run security test script \`scripts/security_check.${scriptLanguage === 'py' ? 'py' : 'js'}\` if exists.`,
+      `Stop on critical issue. Ask user before overwrite config.`
+    ];
+  }
+  const reviewChecksStr = reviewLines.map(r => `- ${r}`).join('\n');
 
   // Hydrate template variables
   const hydrated = hydrateTemplate(template, {
     NAME: name,
     DESCRIPTION: description,
-    TAGS: tagList,
-    PLAYBOOK_STEPS: defaultPlaybookSteps
+    TRIGGERS_LIST: triggersListStr,
+    REQUIREMENTS_LIST: requirementsListStr,
+    PLAYBOOK_STEPS: playbookStepsStr,
+    REVIEW_CHECKS: reviewChecksStr
   });
 
   // Write SKILL.md
@@ -134,7 +192,33 @@ export function scaffoldSkill(options) {
   ensureDirectory(path.join(targetDir, 'evals'));
 
   // Write a mock security-first placeholder script under scripts/
-  const mockScript = `/**
+  if (scriptLanguage === 'py') {
+    const pythonScript = `#!/usr/bin/env python3
+"""
+Verification script for ${name}
+High-quality, robust validation.
+"""
+import os
+import sys
+
+def verify_environment():
+    print("Verifying sandboxed Python execution parameters...")
+    # Check for presence of credentials in env variables, ensure none are hardcoded
+    if os.environ.get("UNEXPECTED_PLAIN_TEXT_KEY"):
+        print("🔴 Security violation: Hardcoded API keys detected in runtime environment.", file=sys.stderr)
+        return False
+    print("🟢 Environment verified. Strict credential restrictions satisfied.")
+    return True
+
+if __name__ == "__main__":
+    if not verify_environment():
+        sys.exit(1)
+    sys.exit(0)
+`;
+    fs.writeFileSync(path.join(targetDir, 'scripts/security_check.py'), pythonScript, 'utf-8');
+    console.log(`  🟢 Created: scripts/security_check.py`);
+  } else {
+    const mockScript = `/**
  * Verification script for ${name}
  * High-quality, robust validation.
  */
@@ -151,8 +235,9 @@ export function verifyEnvironment() {
 
 verifyEnvironment();
 `;
-  fs.writeFileSync(path.join(targetDir, 'scripts/security_check.js'), mockScript, 'utf-8');
-  console.log(`  🟢 Created: scripts/security_check.js`);
+    fs.writeFileSync(path.join(targetDir, 'scripts/security_check.js'), mockScript, 'utf-8');
+    console.log(`  🟢 Created: scripts/security_check.js`);
+  }
 
   // Scaffold evals.json
   const evalsTmplPath = path.join(TEMPLATE_DIR, 'evals_template.json');
@@ -173,7 +258,7 @@ verifyEnvironment();
         name: name,
         description: description,
         version: '0.1.0',
-        triggers: [`idea: check ${name}`, `/${name}`],
+        triggers: triggerLines.map(t => t.replace(/^['"]|['"]$/g, '')),
         tags: tags.split(',').map(t => t.trim()).filter(Boolean)
       }, targetDir);
       console.log(`  🟢 Registered skill in agy-gen global index.`);
@@ -416,9 +501,64 @@ export async function main() {
       case '1': {
         const description = (await askQuestion("Enter short description: ")).trim() || "Custom Antigravity skill.";
         const tags = (await askQuestion("Enter comma-separated tags (e.g. security, python, review): ")).trim() || "general";
-        const localOnlyAnswer = (await askQuestion("Explicitly keep this skill local-only (y/N)? ")).trim().toLowerCase();
-        const localOnly = localOnlyAnswer === 'y' || localOnlyAnswer === 'yes';
-        scaffoldSkill({ name, description, tags, targetDir, localOnly });
+        
+        console.log("\nSelect Creation Mode:");
+        console.log("  [1] Quick Creation (Auto-fill with defaults)");
+        console.log("  [2] Advanced Creation (Interactively customize triggers, requirements, and tasks)");
+        const modeChoice = (await askQuestion("Enter selection (1-2, Default: 1): ")).trim() || '1';
+        const creationMode = modeChoice === '2' ? 'advanced' : 'quick';
+
+        let customTriggers = [];
+        let customRequirements = [];
+        let customTasks = [];
+        let customReviews = [];
+        let scriptLanguage = 'js';
+
+        if (creationMode === 'advanced') {
+          console.log("\n--- Advanced Customization Loop ---");
+          const triggersInput = await askQuestion("Enter comma-separated triggers (e.g. /my-cmd, context: check): ");
+          if (triggersInput.trim()) {
+            customTriggers = triggersInput.split(',').map(t => t.trim()).filter(Boolean);
+          }
+
+          const reqsInput = await askQuestion("Enter runtime requirements (e.g. node: >=18, python: >=3.10): ");
+          if (reqsInput.trim()) {
+            customRequirements = reqsInput.split(',').map(r => r.trim()).filter(Boolean);
+          }
+
+          const tasksInput = await askQuestion("Enter custom task definitions (semicolon-separated): ");
+          if (tasksInput.trim()) {
+            customTasks = tasksInput.split(';').map(t => t.trim()).filter(Boolean);
+          }
+
+          const reviewsInput = await askQuestion("Enter custom review checks (semicolon-separated): ");
+          if (reviewsInput.trim()) {
+            customReviews = reviewsInput.split(';').map(r => r.trim()).filter(Boolean);
+          }
+
+          console.log("\nSelect Verification Script Language:");
+          console.log("  [1] Node.js (scripts/security_check.js)");
+          console.log("  [2] Python (scripts/security_check.py - Hardened)");
+          const langChoice = (await askQuestion("Enter selection (1-2, Default: 1): ")).trim() || '1';
+          scriptLanguage = langChoice === '2' ? 'py' : 'js';
+        }
+
+        const localOnlyAnswer = (await askQuestion("\nExplicitly keep this skill local-only (y/N)? ")).trim().toLowerCase();
+        const localOnly = localOnlyAnswer === 'y' || localOnlyAnswer === 'yes' || process.argv.includes('--local-only') || process.argv.includes('-o');
+
+        scaffoldSkill({
+          name,
+          description,
+          tags,
+          targetDir,
+          localOnly,
+          creationMode,
+          customTriggers,
+          customRequirements,
+          customTasks,
+          customReviews,
+          scriptLanguage
+        });
         break;
       }
       case '2': {

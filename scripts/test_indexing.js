@@ -141,6 +141,9 @@ version: "0.1.0"
 triggers:
   - "idea: check branch name"
   - "/validate-branch"
+requirements:
+  - "node: >=18"
+  - "python: >=3.10"
 ---
 # Main Content here
 `;
@@ -151,6 +154,10 @@ triggers:
     assert(Array.isArray(parsed.triggers), "Triggers frontmatter must be parsed as array.");
     assert(parsed.triggers.length === 2, `Triggers size mismatch: ${parsed.triggers.length}`);
     assert(parsed.triggers[1] === '/validate-branch', "Triggers index mismatch.");
+    assert(Array.isArray(parsed.requirements), "Requirements must be parsed as an array.");
+    assert(parsed.requirements.length === 2, "Requirements size mismatch.");
+    assert(parsed.requirements[0] === 'node: >=18', "Requirement[0] mismatch.");
+    assert(parsed.requirements[1] === 'python: >=3.10', "Requirement[1] mismatch.");
     console.log("  ✓ Yaml frontmatter parsed seamlessly without dependencies.");
 
     // 7. Directory Crawling Workspace Discovery
