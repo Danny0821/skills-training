@@ -411,9 +411,9 @@ def verify_environment():
     print("Verifying sandboxed Python execution parameters...")
     # Check for presence of credentials in env variables, ensure none are hardcoded
     if os.environ.get("UNEXPECTED_PLAIN_TEXT_KEY"):
-        print("🔴 Security violation: Hardcoded API keys detected in runtime environment.", file=sys.stderr)
+        print("[ERROR] Security violation: Hardcoded API keys detected in runtime environment.", file=sys.stderr)
         return False
-    print("🟢 Environment verified. Strict credential restrictions satisfied.")
+    print("[OK] Environment verified. Strict credential restrictions satisfied.")
     return True
 
 if __name__ == "__main__":
@@ -439,7 +439,9 @@ export function verifyEnvironment() {
   return true;
 }
 
-verifyEnvironment();
+if (!verifyEnvironment()) {
+  process.exit(1);
+}
 `;
     fs.writeFileSync(path.join(targetDir, 'scripts/security_check.js'), mockScript, 'utf-8');
     console.log(`  🟢 Created: scripts/security_check.js`);
