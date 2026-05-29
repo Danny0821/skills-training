@@ -5,6 +5,12 @@
 > [!WARNING]
 > **Active Development (Alpha Status)**: This repository represents an early version under active, rapid development. Architectural specifications, templates, CLI flags, and coordinate playbooks are subject to major breaking changes in future releases.
 
+## 💡 What is `agy-gen`?
+
+**Antigravity Generator (`agy-gen`)** is a professional-grade, zero-dependency, security-first command-line engine designed to automate the scaffolding and lifecycle management of isolated **AI Agent Skills, Hook Rules, Standalone Agent Profiles, and Coordinated Agent Systems** in localized developer workspaces.
+
+Rather than writing unstructured playbooks that lead to "AI slop" or context contamination, `agy-gen` programmatically structures your agent environments with strict execution boundaries, stack-specific telemetry indices, and automated guardrails.
+
 ---
 
 ## 🚀 1. Installation & Quick Start
@@ -40,7 +46,28 @@ npm run test
 
 ---
 
-## ⚙️ 2. CLI Command & Parameters Reference
+## 🤖 2. How to Use in Agentic Mode
+
+`agy-gen` is natively designed to be utilized and triggered by **AI Coding Agents** (such as Gemini, Antigravity, or other advanced coding assistants) operating in your local development workspace.
+
+### 1. Intercepting a Shared Skill Workspace
+When a user pastes a GitHub repository link or points an AI Agent to a folder containing a skill scaffolded by `agy-gen`, the primary `SKILL.md` file contains UPA-aligned onboarding manifests.
+* The Agent automatically recognizes the generator directory layout.
+* It will immediately initiate a jargon-free, friendly onboarding sequence to guide you through workspace commands.
+
+### 2. Prompting the Agent to Scaffold new Skills
+You can directly command your active coding agent to create custom skill profiles, pre-commit hook rules, or DevTeam systems for you.
+> **Prompt Directive Example:**
+> *"Create a new local-only Security Auditor skill named 'secret-scanner' using agy-gen. Setup advanced Python scanning requirements."*
+
+### 3. The Self-Improving Telemetry Loop (Autolearner Protocol)
+When an agent is performing software creation or infrastructure tasks under an `agy-gen` skill, it is bound to a closed-loop learning protocol:
+1. **Regression Prevention:** Before beginning any code write or build action, the agent's XML instructions mandate that it reads `lessons_index.md` (Telemetry Index) and `playbook.md` (Telemetry Playbook) inside the skill folder to check for historical bugs or OS workarounds.
+2. **Failure Logging:** If a sandbox run, build test, or security pre-commit validation fails, the agent writes the detailed failure context and fix criteria directly into the playbook, making it dynamically smarter for all future tasks.
+
+---
+
+## ⚙️ 3. CLI Command & Parameters Reference
 
 `agy-gen` operates as an interactive guided wizard or via direct query command-line parameters:
 
@@ -67,7 +94,7 @@ antigravity-gen --remove <skill-name> --purge
 
 ---
 
-## 👥 3. The 6 DevTeam Archetypes
+## 👥 4. The 6 DevTeam Archetypes
 
 To eradicate technology stack mixing ("AI slop") and Greenfield empty directory conflicts, all generated playbooks are partitioned into **6 specialized organizational profiles**:
 
@@ -82,7 +109,7 @@ To eradicate technology stack mixing ("AI slop") and Greenfield empty directory 
 
 ---
 
-## 🔄 4. Dual-Mode Coordination Protocol (DMCP)
+## 🔄 5. Dual-Mode Coordination Protocol (DMCP)
 
 Generated playbooks contain a dynamic, decentralized execution protocol inside their XML instructions:
 
@@ -105,7 +132,7 @@ graph TD
 
 ---
 
-## 📂 5. Dynamic Telemetry Registries & safe Fallback
+## 📂 6. Dynamic Telemetry Registries & safe Fallback
 
 Every generated skill receives an isolated telemetry index (`lessons_index.md`) and playbook (`playbook.md`) database aligned with its **Archetype** and **Language/Technology** environment:
 
@@ -116,7 +143,7 @@ Every generated skill receives an isolated telemetry index (`lessons_index.md`) 
 
 ---
 
-## 📝 6. Unified Prompt Architecture (UPA)
+## 📝 7. Unified Prompt Architecture (UPA)
 
 Scaffolded skills conform strictly to the **Unified Prompt Architecture (UPA)**, maximizing semantic density and prefix-caching efficiencies across frontier models:
 
@@ -140,7 +167,7 @@ Scaffolded skills conform strictly to the **Unified Prompt Architecture (UPA)**,
 
 ---
 
-## 🛡️ 7. Core Security Guardrails
+## 🛡️ 8. Core Security Guardrails
 
 1. **Credentials Firewall**: Plain-text passwords, tokens, or keys are scanned and completely banned. All templates default securely to env variables.
 2. **Directory Purge Shield**: The `--purge` command deletes physical directories *only* if they reside inside the global user configuration path (`~/.gemini/config/`). Local developer project workspaces are structurally protected from accidental deletions.
