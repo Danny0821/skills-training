@@ -1,6 +1,15 @@
-# SKILL.md — Antigravity Agentic Interviewer Playbook
+---
+name: "agentic-interviewer"
+description: "Conversational onboarding interviewer that grills you about your project and scaffolds coordinated teams."
+version: "0.1.0"
+triggers:
+  - "/interview"
+  - "/grill-blueprint"
+requirements:
+  - "node: >=18"
+---
 
-> Specialized conversational onboarding playbook. Optimizes token usage under Unified Prompt Architecture (UPA). Guides beginners and expert developers to scaffold coordinated teams.
+# SKILL.md — Antigravity Agentic Interviewer Playbook
 
 <instructions>
   <role>
