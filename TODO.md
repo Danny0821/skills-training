@@ -77,3 +77,39 @@ Eradicate technology cross-mixing ("AI slop") and Greenfield empty directory con
 - `[x]` **Dynamic Archetype Classifier**: Automatically detects the skill's archetype based on semantic name/description keywords (`detectArchetype`).
 - `[x]` **Dual-Mode Coordination Protocol (DMCP)**: Empowers skills to self-coordinate in empty directory contexts, yielding execution to prerequisite blueprint skills (e.g. Developer yields to Architect specs) in the absence of a central orchestrator.
 - `[x]` **E2E Sandbox Multi-Archetype Verification**: Embedded Step 9 in sandbox tests asserting strict playbook separation and DMCP choreographed fallback rules.
+
+---
+
+## 📂 Release 0.4.3: Dynamic Telemetry Registries & Safe Fallback Cascade [COMPLETED]
+
+### Goal
+Eradicate technology cross-mixing ("AI slop") in telemetry files and optimize prompt token density under UPA.
+
+### Tasks
+- `[x]` **Dynamic Telemetry Registry**: Map specialized templates (`developer:js`, `developer:py`, `architect`, etc.) platform-compatibly, isolating environment guidelines.
+- `[x]` **Three-Tiered Fallback Resolution Chain**: Cascade searches (`targetStack` -> `archetype` -> `default`) to guarantee 100% compiler stability on future technology additions.
+- `[x]` **Prompt Token Density Optimization**: Delete redundant playbooks XML blocks to conserve context window allocations.
+
+---
+
+## 🛡️ Release 0.5.0: Defense-in-Depth Security & Layer 3 CI/CD Workflows [COMPLETED]
+
+### Goal
+Implement premium multi-layer security guardrails and automated remote pipeline scans to block hardcoded plaintext keys.
+
+### Tasks
+- `[x]` **Hardened Client Verification**: Configure non-zero exit codes (`process.exit(1)`) on JS security violations, and safe ASCII logging status tags in Python.
+- `[x]` **Layer 3 CI/CD GitHub Actions Scanners**: Automatically scaffold pre-configured `.github/workflows/security_scan.yml` pipelines tailored to Node/Python targets to block local pre-commit hook bypasses.
+- `[x]` **CLI Options Parser Abstraction**: Abstract arguments routing into an isolated `parseCliArgs()` helper to easily accommodate administrative flag expansions.
+
+---
+
+## 🤖 Release 0.6.0: Agentic Interviewing & Conversational Scaffolding [PLANNED]
+
+### Goal
+Lower the barrier of entry for beginners and less technical users by replacing rigid technical CLI prompts with a dynamic, conversational agent-mediated interview.
+
+### Tasks
+- `[ ]` **The Agentic Interview Protocol (`/grill-me` / `/interview`):** Design an agentic workflow where the LLM agent interviews the user using simple product/business questions rather than technical variables (e.g. scoping project scale, tech familiarity, and operational needs).
+- `[ ]` **Algorithmic Blueprint Synthesizer:** Empower the agent to programmatically analyze interview dialog, determine necessary DevTeam archetypes, and auto-generate a coordinated system architecture blueprint.
+- `[ ]` **Non-Interactive Scaffolding API:** Expose a non-interactive CLI scaffolding hook in the generator engine, allowing the agent to compile the synthesized blueprint and write the folder structure autonomously without requiring manual user terminal inputs.
