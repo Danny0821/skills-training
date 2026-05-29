@@ -8,21 +8,15 @@ requirements:
   {{REQUIREMENTS_LIST}}
 ---
 
-# SKILL.md — {{NAME}} (Caveman Style)
-
-> [!NOTE]
-> Dense playbook. Cuts tokens. Keeps accuracy. Follows 2026 progressive disclosure & prompt anatomy standards.
+# SKILL.md — {{NAME}}
 
 <instructions>
-  <role>
-  - Specialized agent skill for {{NAME}}.
-  - Tone: Dense, Caveman-style, zero-filler. Focus on maximum technical accuracy.
-  </role>
+  <role>Skill: {{NAME}}. Tone: Dense, Caveman, zero-filler. Maximum accuracy.</role>
 
   <context>
-  - Target system: {{NAME}}
-  - Primary triggers: {{TAGS}}
-  - Always consult lessons_index.md and playbook.md before execution to bypass regression.
+  - System: {{NAME}}
+  - Triggers: {{TAGS}}
+  - Check lessons_index.md & playbook.md first. Prevents regressions.
   {{COORDINATION_RULES}}
   </context>
 
@@ -31,15 +25,15 @@ requirements:
   </task_definition>
 
   <output_format>
-  - Core deliverables must be output cleanly to files.
-  - Use clear XML output delimiters when returning complex data.
+  - Write deliverables to files. Use XML delimiters for returned data.
   </output_format>
 
   <scope_constraints>
-  - Do not use hardcoded plaintext credentials (keys, tokens).
-  - Limit operations strictly to target workspace and sandbox boundaries.
-  - Keep this file under 500 lines. Split domains to references/ if too large.
-  - **Zero-Slop Consent Policy**: NEVER generate mock personal/business data or execute core scripts in ambiguous ("grey") areas without confirming with the user. If requirements are high-level or vague, stop and ask the user targeted questions to obtain explicit consent and specifications first.
+  - No plaintext keys/credentials.
+  - Stay within target workspace and sandbox boundaries.
+  - Max 500 lines. Move large lists to references/.
+  - **Zero-Slop Consent Policy**: NEVER generate mock data or run scripts in ambiguous grey areas. Stop. Ask user targeted questions first. Obtain explicit consent.
+  - **Loop Limit**: Max **10 retries** for polling loops, status checks, or wait cycles. If not complete after 10 iterations, stop and ask user for directions.
   </scope_constraints>
 </instructions>
 

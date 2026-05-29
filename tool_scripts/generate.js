@@ -142,9 +142,6 @@ export function scaffoldAutolearner(targetDir, componentName, archetype = 'defau
       hydrateTemplate(playbookTmpl, replacements),
       'utf-8'
     );
-
-    console.log(`  🟢 Created Autolearner Index: lessons_index.md (${target.lessons})`);
-    console.log(`  🟢 Created Autolearner Playbook: playbook.md (${target.playbook})`);
   } catch (err) {
     console.error(`  🔴 Failed to scaffold Autolearner files: ${err.message}`);
   }
@@ -301,14 +298,12 @@ export function scaffoldSkill(options) {
     scriptLanguage = null
   } = options;
 
-  console.log(`\nScaffolding Skill: ${name}...`);
   ensureDirectory(targetDir);
   ensureDirectory(path.join(targetDir, 'scripts'));
 
   // 1. Resolve Archetype
   const resolvedArchetype = archetype || detectArchetype(name, description, tags);
   const profile = ARCHETYPE_PROFILES[resolvedArchetype] || ARCHETYPE_PROFILES.developer;
-  console.log(`  🟢 Profile matched: ${profile.description} [${resolvedArchetype}]`);
 
   // Read skill template
   const tmplPath = path.join(TEMPLATE_DIR, 'skill_template.md');
@@ -391,7 +386,6 @@ export function scaffoldSkill(options) {
 
   // Write SKILL.md
   fs.writeFileSync(path.join(targetDir, 'SKILL.md'), hydrated, 'utf-8');
-  console.log(`  🟢 Created: SKILL.md`);
 
   // Create references/ and evals/ directories
   ensureDirectory(path.join(targetDir, 'references'));
@@ -422,7 +416,6 @@ if __name__ == "__main__":
     sys.exit(0)
 `;
     fs.writeFileSync(path.join(targetDir, 'scripts/security_check.py'), pythonScript, 'utf-8');
-    console.log(`  🟢 Created: scripts/security_check.py`);
   } else if (targetScriptLang === 'js') {
     const mockScript = `/**
  * Verification script for ${name}
@@ -444,9 +437,6 @@ if (!verifyEnvironment()) {
 }
 `;
     fs.writeFileSync(path.join(targetDir, 'scripts/security_check.js'), mockScript, 'utf-8');
-    console.log(`  🟢 Created: scripts/security_check.js`);
-  } else {
-    console.log(`  🟢 Bypassed verification script (language: ${targetScriptLang})`);
   }
 
   // Scaffold evals.json
@@ -455,7 +445,6 @@ if (!verifyEnvironment()) {
     const evalsTmpl = fs.readFileSync(evalsTmplPath, 'utf-8');
     const hydratedEvals = hydrateTemplate(evalsTmpl, { NAME: name });
     fs.writeFileSync(path.join(targetDir, 'evals/evals.json'), hydratedEvals, 'utf-8');
-    console.log(`  🟢 Created: evals/evals.json`);
   }
 
   // Scaffold Layer 3 (CI/CD GitHub Actions Security Workflow) for Defense-in-Depth
@@ -492,7 +481,6 @@ jobs:
         ! grep -rnE "[a-zA-Z0-9_-]{24,}" --exclude-dir=node_modules --exclude-dir=.git --exclude=.github/workflows/security_scan.yml .
 `;
   fs.writeFileSync(workflowPath, workflowContent, 'utf-8');
-  console.log(`  🟢 Created Layer 3 Guardrail: .github/workflows/security_scan.yml`);
 
   // Scaffold global scanner exclusions if Security Auditor archetype is active
   if (resolvedArchetype === 'auditor') {
@@ -502,12 +490,10 @@ jobs:
     if (fs.existsSync(gitleaksTmplPath)) {
       const gitleaksContent = fs.readFileSync(gitleaksTmplPath, 'utf-8');
       fs.writeFileSync(path.join(targetDir, 'gitleaks.toml'), gitleaksContent, 'utf-8');
-      console.log(`  🟢 Created Security Exclusions: gitleaks.toml`);
     }
     if (fs.existsSync(trivyTmplPath)) {
       const trivyContent = fs.readFileSync(trivyTmplPath, 'utf-8');
       fs.writeFileSync(path.join(targetDir, 'trivy.yaml'), trivyContent, 'utf-8');
-      console.log(`  🟢 Created Security Exclusions: trivy.yaml`);
     }
   }
 
@@ -524,15 +510,27 @@ jobs:
         triggers: triggerLines.map(t => t.replace(/^['"]|['"]$/g, '')),
         tags: tags.split(',').map(t => t.trim()).filter(Boolean)
       }, targetDir);
-      console.log(`  🟢 Registered skill in agy-gen global index.`);
     } catch (indexErr) {
       console.warn(`  ⚠️ Warning: Failed to register skill in index: ${indexErr.message}`);
     }
-  } else {
-    console.log(`  ⚠️ Local-only mode enabled. Bypassing global registry registration.`);
   }
 
-  console.log(`🟢 Skill [${name}] successfully scaffolded!`);
+  // Generate high-density telegraphic log
+  const filesList = ['SKILL.md', 'lessons_index.md', 'playbook.md'];
+  if (targetScriptLang === 'py' || targetScriptLang === 'js') {
+    filesList.push(`scripts/security_check.${targetScriptLang}`);
+  }
+  if (fs.existsSync(path.join(targetDir, 'evals/evals.json'))) {
+    filesList.push('evals/evals.json');
+  }
+  if (fs.existsSync(path.join(targetDir, '.github/workflows/security_scan.yml'))) {
+    filesList.push('workflows/security_scan.yml');
+  }
+  if (resolvedArchetype === 'auditor') {
+    filesList.push('gitleaks.toml', 'trivy.yaml');
+  }
+
+  console.log(`✓ Scaffolded skill [${name}] [${resolvedArchetype}]: (${filesList.join(', ')})` + (!localOnly ? ' [Registered]' : ' [Local]'));
   if (!isSubSkill) {
     console.log("\n==================================================================");
     console.log("👉 QUICK-START GUIDE FOR PAIR PROGRAMMING:");
@@ -550,7 +548,6 @@ jobs:
 export function scaffoldHook(options) {
   const { name, events, filePatterns, severity, targetDir } = options;
 
-  console.log(`\nScaffolding Agent Hook: ${name}...`);
   ensureDirectory(targetDir);
 
   const tmplPath = path.join(TEMPLATE_DIR, 'hook_template.md');
@@ -575,8 +572,7 @@ echo "🟢 Safety validations complete."
 
   const hookFileName = `${name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_hook.md`;
   fs.writeFileSync(path.join(targetDir, hookFileName), hydrated, 'utf-8');
-  console.log(`  🟢 Created Hook Rule: ${hookFileName}`);
-  console.log(`🟢 Hook [${name}] successfully created under ${targetDir}!`);
+  console.log(`✓ Scaffolded hook [${name}] (${hookFileName})`);
 }
 
 /**
@@ -586,12 +582,10 @@ echo "🟢 Safety validations complete."
 export function scaffoldAgent(options) {
   const { name, description, role, allowedSkills, targetDir } = options;
 
-  console.log(`\nScaffolding Agent Profile: ${name}...`);
   ensureDirectory(targetDir);
 
   const resolvedArchetype = detectArchetype(name, description, role);
   const profile = ARCHETYPE_PROFILES[resolvedArchetype] || ARCHETYPE_PROFILES.developer;
-  console.log(`  🟢 Agent Profile matched: ${profile.description} [${resolvedArchetype}]`);
 
   const tmplPath = path.join(TEMPLATE_DIR, 'agent_template.md');
   if (!fs.existsSync(tmplPath)) {
@@ -609,8 +603,7 @@ export function scaffoldAgent(options) {
   });
 
   fs.writeFileSync(path.join(targetDir, 'AGENT.md'), hydrated, 'utf-8');
-  console.log(`  🟢 Created Agent Profile: AGENT.md`);
-  console.log(`🟢 Agent [${name}] successfully created!`);
+  console.log(`✓ Scaffolded agent [${name}] (AGENT.md)`);
 }
 
 /**

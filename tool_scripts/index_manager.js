@@ -247,11 +247,12 @@ export function scanWorkspace(dirPath) {
       }
     }
 
-    // Recursively scan subfolders, skipping node_modules and .git
+    // Recursively scan subfolders, skipping heavy or temporary directories to save tokens
     for (const entry of entries) {
       if (entry.isDirectory()) {
         const name = entry.name;
-        if (name !== 'node_modules' && name !== '.git' && name !== 'output_test') {
+        const skippedDirs = ['node_modules', '.git', 'output_test', 'dist', 'build', 'skillsets', 'output', 'coverage', '.gemini', 'tool_tests'];
+        if (!skippedDirs.includes(name)) {
           traverse(path.join(currentDir, name));
         }
       }
