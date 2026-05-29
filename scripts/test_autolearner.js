@@ -71,9 +71,15 @@ ${code}
  */
 function setupTestWorkspace() {
   if (fs.existsSync(TEST_WORKSPACE)) {
-    fs.rmSync(TEST_WORKSPACE, { recursive: true, force: true });
+    try {
+      fs.rmSync(TEST_WORKSPACE, { recursive: true, force: true });
+    } catch (e) {
+      console.warn("⚠️ Warning: Failed to fully delete old test workspace:", e.message);
+    }
   }
-  fs.mkdirSync(TEST_WORKSPACE, { recursive: true });
+  if (!fs.existsSync(TEST_WORKSPACE)) {
+    fs.mkdirSync(TEST_WORKSPACE, { recursive: true });
+  }
 
   const indexTmpl = fs.readFileSync(path.join(TEMPLATES_DIR, 'lessons_index_template.md'), 'utf-8');
   const playbookTmpl = fs.readFileSync(path.join(TEMPLATES_DIR, 'playbook_template.md'), 'utf-8');

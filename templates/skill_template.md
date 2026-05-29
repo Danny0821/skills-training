@@ -1,6 +1,6 @@
 ---
 name: "{{NAME}}"
-description: "{{DESCRIPTION}} Make sure to trigger this skill whenever the user mentions {{NAME}}, {{TAGS}}, or related workflows, even if they do not explicitly ask for it."
+description: "{{DESCRIPTION}}"
 version: "0.1.0"
 triggers:
   {{TRIGGERS_LIST}}

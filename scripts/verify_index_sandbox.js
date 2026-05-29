@@ -23,11 +23,15 @@ const SOURCE_SANDBOX_DIR = path.resolve(__dirname, '../output_test/autolearner-t
 const CLI_PATH = path.resolve(__dirname, '../bin/cli.js');
 
 function cleanRegistry() {
-  if (fs.existsSync(SANDBOX_REGISTRY_DIR)) {
-    fs.rmSync(SANDBOX_REGISTRY_DIR, { recursive: true, force: true });
-  }
-  if (fs.existsSync(SOURCE_SANDBOX_DIR)) {
-    fs.rmSync(SOURCE_SANDBOX_DIR, { recursive: true, force: true });
+  try {
+    if (fs.existsSync(SANDBOX_REGISTRY_DIR)) {
+      fs.rmSync(SANDBOX_REGISTRY_DIR, { recursive: true, force: true });
+    }
+    if (fs.existsSync(SOURCE_SANDBOX_DIR)) {
+      fs.rmSync(SOURCE_SANDBOX_DIR, { recursive: true, force: true });
+    }
+  } catch (e) {
+    console.warn("⚠️ Warning: Failed to fully clean sandbox registry/project folders:", e.message);
   }
 }
 

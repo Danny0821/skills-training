@@ -133,7 +133,7 @@ npm run test
 
 ---
 
-## 🆕 7. Interactive Agentic Skill Creation (Release 0.4.0)
+## 🆕 7. Interactive Agentic Skill Creation (Release 0.4.0 & 0.4.1)
 
 Introduces Quick vs. Advanced modes to interactively build skills with custom requirements and hardened script engines.
 
@@ -149,3 +149,13 @@ Introduces Quick vs. Advanced modes to interactively build skills with custom re
 ### Verification Script Stack:
 * **Node.js**: Standard modern JS verification script (`security_check.js`).
 * **Python**: Shebang-hardened (`#!/usr/bin/env python3`) verification script (`security_check.py`) with cross-platform environment fallback search path checks (`python3` -> `python` -> `py -3`) to avoid OS path crashes.
+
+### Future-Proofing & Quality Hardening (Release 0.4.1):
+1. **Dynamic Environment Baselining**:
+   * Scaffolder-time detection queries the host machine's running engine versions (`process.versions.node` and dynamic Python CLI detection) to write precise, tailored requirements (e.g. `node: >=24`).
+2. **Clean Router Descriptions**:
+   * Isolated metapoziom triggering instructions from the description field in metadata, ensuring pure semantic matching for the Router.
+3. **Active TDD Playbooks**:
+   * Playbook tasks now explicitly instruct the agent to query and target the **highest compiler/runtime standard supported by the host** (Option 1) and to actively execute unit tests (Catch2, GTest, Pytest, Jest) to verify logic instead of relying on static comments code reviews.
+4. **Dynamic Tags Hydration**:
+   * `{{TAGS}}` is dynamically resolved and written to `<context>` blocks, eliminating plain placeholders.

@@ -1,12 +1,12 @@
 ---
 name: "python-audit"
-description: "Coordinated skill for python-audit within the python-security-agency system. Make sure to trigger this skill whenever the user mentions python-audit, {{TAGS}}, or related workflows, even if they do not explicitly ask for it."
+description: "Coordinated skill for python-audit within the python-security-agency system."
 version: "0.1.0"
 triggers:
   - "idea: python-audit"
   - "context: python-security-agency, child-skill"
 requirements:
-  - "node: >=18"
+  - "node: >=24"
 ---
 
 # SKILL.md — python-audit (Caveman Style)
@@ -22,13 +22,14 @@ requirements:
 
   <context>
   - Target system: python-audit
-  - Primary triggers: {{TAGS}}
+  - Primary triggers: python-security-agency, child-skill
   - Always consult lessons_index.md and playbook.md before execution to bypass regression.
   </context>
 
   <task_definition>
   - Learn context: Read lessons_index.md for known issues.
-- Execute tasks securely.
+- Execute tasks securely. Target compiler/runtime executions at the highest modern standard flag supported by the host environment.
+- Verify logic correctness: Always compile/run code and verify correctness against active unit test suites (e.g. Catch2, Google Test, pytest, Jest) rather than solely reading code/comments.
 - Log mistakes: Write newly learned facts to lessons_index.md.
   </task_definition>
 
@@ -46,7 +47,8 @@ requirements:
 
 <review_checks>
 - Before edit: Scan files for vulnerabilities.
-- Run security test script `scripts/security_check.js` if exists.
+- Verify code compiles and executes flawlessly under the maximum modern language standard supported by the host.
+- Run test runner script and verify 100% test assertion success.
 - Stop on critical issue. Ask user before overwrite config.
 </review_checks>
 

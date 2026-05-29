@@ -17,8 +17,12 @@ process.env.AGY_GEN_TEST_DIR = path.join(TEST_OUTPUT_DIR, 'test-registry');
 
 function cleanup() {
   if (fs.existsSync(TEST_OUTPUT_DIR)) {
-    fs.rmSync(TEST_OUTPUT_DIR, { recursive: true, force: true });
-    console.log("🧹 Cleaned up old test directory.");
+    try {
+      fs.rmSync(TEST_OUTPUT_DIR, { recursive: true, force: true });
+      console.log("🧹 Cleaned up old test directory.");
+    } catch (e) {
+      console.warn("⚠️ Warning: Failed to fully clean old test directory (file locked):", e.message);
+    }
   }
 }
 

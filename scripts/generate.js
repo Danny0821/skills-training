@@ -15,6 +15,7 @@ import path from 'path';
 import os from 'os';
 import { fileURLToPath } from 'url';
 import readline from 'readline';
+import { execSync } from 'child_process';
 import { registerSkill } from './index_manager.js';
 
 // Resolve current directory for ES modules to properly locate templates
@@ -143,7 +144,24 @@ export function scaffoldSkill(options) {
   if (creationMode === 'advanced' && customRequirements.length > 0) {
     requirementLines = customRequirements.map(r => `"${r.trim()}"`);
   } else {
-    requirementLines = [`"node: >=18"`];
+    // Option 2: Scaffolding-Time Host Baselining
+    const activeNodeMajor = process.versions.node.split('.')[0];
+    requirementLines = [`"node: >=${activeNodeMajor}"`];
+
+    // Detect Python standard if we target python scripts
+    if (scriptLanguage === 'py') {
+      let pythonVersion = '>=3.10';
+      try {
+        const stdout = execSync('python3 --version || python --version', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+        const match = stdout.match(/Python\s+([0-9]+\.[0-9]+)/i);
+        if (match) {
+          pythonVersion = `>=${match[1]}`;
+        }
+      } catch (e) {
+        // Safe fallback
+      }
+      requirementLines.push(`"python: ${pythonVersion}"`);
+    }
   }
   const requirementsListStr = requirementLines.map(r => `- ${r}`).join('\n  ');
 
@@ -152,9 +170,11 @@ export function scaffoldSkill(options) {
   if (creationMode === 'advanced' && customTasks.length > 0) {
     taskLines = customTasks.map(t => t.trim()).filter(Boolean);
   } else {
+    // Option 1: Semantic Standard Target & Active TDD instructions
     taskLines = [
       `Learn context: Read lessons_index.md for known issues.`,
-      `Execute tasks securely.`,
+      `Execute tasks securely. Target compiler/runtime executions at the highest modern standard flag supported by the host environment.`,
+      `Verify logic correctness: Always compile/run code and verify correctness against active unit test suites (e.g. Catch2, Google Test, pytest, Jest) rather than solely reading code/comments.`,
       `Log mistakes: Write newly learned facts to lessons_index.md.`
     ];
   }
@@ -167,7 +187,8 @@ export function scaffoldSkill(options) {
   } else {
     reviewLines = [
       `Before edit: Scan files for vulnerabilities.`,
-      `Run security test script \`scripts/security_check.${scriptLanguage === 'py' ? 'py' : 'js'}\` if exists.`,
+      `Verify code compiles and executes flawlessly under the maximum modern language standard supported by the host.`,
+      `Run test runner script and verify 100% test assertion success.`,
       `Stop on critical issue. Ask user before overwrite config.`
     ];
   }
@@ -177,6 +198,7 @@ export function scaffoldSkill(options) {
   const hydrated = hydrateTemplate(template, {
     NAME: name,
     DESCRIPTION: description,
+    TAGS: tags.split(',').map(t => t.trim()).filter(Boolean).join(', '),
     TRIGGERS_LIST: triggersListStr,
     REQUIREMENTS_LIST: requirementsListStr,
     PLAYBOOK_STEPS: playbookStepsStr,
