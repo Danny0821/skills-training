@@ -263,6 +263,54 @@ function runSandboxVerification() {
       localOnly: true
     });
 
+    // E. Scaffold DevOps Skill
+    const devopsSkillDir = path.join(SOURCE_SANDBOX_DIR, 'devops-deploy-pipeline');
+    scaffoldSkill({
+      name: 'devops-deploy-pipeline',
+      description: 'Docker deployment pipeline.',
+      tags: 'devops, docker, deploy',
+      targetDir: devopsSkillDir,
+      creationMode: 'advanced',
+      archetype: 'devops',
+      localOnly: true
+    });
+
+    // F. Scaffold QA Skill
+    const qaSkillDir = path.join(SOURCE_SANDBOX_DIR, 'playwright-e2e-suite');
+    scaffoldSkill({
+      name: 'playwright-e2e-suite',
+      description: 'Playwright test suite.',
+      tags: 'qa, test, playwright',
+      targetDir: qaSkillDir,
+      creationMode: 'advanced',
+      archetype: 'qa',
+      localOnly: true
+    });
+
+    // G. Scaffold Security Auditor Skill
+    const auditorSkillDir = path.join(SOURCE_SANDBOX_DIR, 'secret-leak-detector');
+    scaffoldSkill({
+      name: 'secret-leak-detector',
+      description: 'Gitleaks safety scanning auditor.',
+      tags: 'security, audit, scanner',
+      targetDir: auditorSkillDir,
+      creationMode: 'advanced',
+      archetype: 'auditor',
+      localOnly: true
+    });
+
+    // H. Scaffold PM Skill
+    const pmSkillDir = path.join(SOURCE_SANDBOX_DIR, 'scrum-board-tracker');
+    scaffoldSkill({
+      name: 'scrum-board-tracker',
+      description: 'Project Roadmap tracking PM.',
+      tags: 'pm, backlog, roadmap',
+      targetDir: pmSkillDir,
+      creationMode: 'advanced',
+      archetype: 'pm',
+      localOnly: true
+    });
+
     // 1. Assert figma-to-html-wireframes (Architect Archetype) contains correct playbook, DMCP, and zero-slop design telemetries
     if (!fs.existsSync(path.join(architectSkillDir, 'SKILL.md'))) {
       throw new Error("Architect skill SKILL.md was not created.");
@@ -335,6 +383,47 @@ function runSandboxVerification() {
       throw new Error("Fallback cascade failed: Agnostic telemetry contaminated with stack-specific tags!");
     }
     console.log("  ✓ Safe Cascade Fallback validated (developer:cpp fell back cleanly to default agnostic telemetry).");
+
+    // 5. Assert devops-deploy-pipeline (DevOps Archetype) contains correct DevOps telemetry
+    const devopsPlaybook = fs.readFileSync(path.join(devopsSkillDir, 'playbook.md'), 'utf8');
+    if (!devopsPlaybook.includes('[DOCKER_MOUNT_01]') || !devopsPlaybook.includes('Windows volume mount')) {
+      throw new Error("DevOps playbook is missing volume mount telemetry!");
+    }
+    if (devopsPlaybook.includes('process.env') || devopsPlaybook.includes('pytest')) {
+      throw new Error("AI Slop: DevOps playbook contaminated with programming stack telemetry!");
+    }
+    console.log("  ✓ DevOps skill structurally validated (Zero-Slop, Pure DevOps Telemetry).");
+
+    // 6. Assert playwright-e2e-suite (QA Archetype) contains correct QA telemetry
+    const qaPlaybook = fs.readFileSync(path.join(qaSkillDir, 'playbook.md'), 'utf8');
+    if (!qaPlaybook.includes('[TEST_TIMEOUT_01]') || !qaPlaybook.includes('waitForSelector')) {
+      throw new Error("QA playbook is missing test timeout telemetry!");
+    }
+    if (qaPlaybook.includes('Foreign Key') || qaPlaybook.includes('pytest')) {
+      throw new Error("AI Slop: QA playbook contaminated with database or python telemetry!");
+    }
+    console.log("  ✓ QA skill structurally validated (Zero-Slop, Pure QA Telemetry).");
+
+    // 7. Assert secret-leak-detector (Auditor Archetype) contains correct Auditor telemetry
+    const auditorPlaybook = fs.readFileSync(path.join(auditorSkillDir, 'playbook.md'), 'utf8');
+    if (!auditorPlaybook.includes('[SCANNER_RULE_01]') || !auditorPlaybook.includes('Semgrep false positive')) {
+      throw new Error("Auditor playbook is missing scanner rule telemetry!");
+    }
+    if (auditorPlaybook.includes('readline') || auditorPlaybook.includes('Figma')) {
+      throw new Error("AI Slop: Auditor playbook contaminated with JS or wireframe telemetry!");
+    }
+    console.log("  ✓ Security Auditor skill structurally validated (Zero-Slop, Pure Auditor Telemetry).");
+
+    // 8. Assert scrum-board-tracker (PM Archetype) contains correct PM telemetry
+    const pmPlaybook = fs.readFileSync(path.join(pmSkillDir, 'playbook.md'), 'utf8');
+    if (!pmPlaybook.includes('[BACKLOG_01]') || !pmPlaybook.includes('prioritization tag duplication')) {
+      throw new Error("PM playbook is missing backlog prioritization telemetry!");
+    }
+    if (pmPlaybook.includes('process.env') || pmPlaybook.includes('pytest')) {
+      throw new Error("AI Slop: PM playbook contaminated with programming stack telemetry!");
+    }
+    console.log("  ✓ Product Manager skill structurally validated (Zero-Slop, Pure PM Telemetry).");
+
     console.log("  ✓ Multi-Archetype Greenfield self-coordination and Dynamic Telemetry E2E verified perfectly.");
 
     console.log("\n=====================================================");
