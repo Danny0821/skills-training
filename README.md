@@ -66,6 +66,7 @@ When a user pastes a GitHub repository link or points an AI Agent to a folder co
 ### 2. Prompting the Agent to Scaffold new Skills
 You can directly command your active coding agent to create custom skill profiles, pre-commit hook rules, or DevTeam systems for you.
 * **Via Slash Command:** Simply type `/generate` in your chat interface. The active agent will capture the slash command manifest, execute the underlying generator globally, and guide you through the creation steps programmatically.
+* **Via Conversational Onboarding:** Type `/interview` in your chat interface. The dedicated `agentic-interviewer` skill will boot up, lead you through a friendly, jargon-free conversational interview about your project requirements, synthesize a team blueprint JSON, and scaffold it automatically.
 * **Via Prompting:** Send a clear text directive to your agent to invoke `agy-gen` under the hood:
   > **Prompt Directive Example:**
   > *"Create a new local-only Security Auditor skill named 'secret-scanner' using agy-gen. Setup advanced Python scanning requirements."*
@@ -100,6 +101,12 @@ antigravity-gen --remove <skill-name>
 # 6. Unregister skill AND physically purge its folders from disk
 # (purges are restricted strictly to files inside global ~/.gemini/config/ skills path)
 antigravity-gen --remove <skill-name> --purge
+
+# 7. Declaratively scaffold a complete coordinated multi-skill team from a JSON blueprint file
+antigravity-gen --blueprint <blueprint-json-path>
+
+# 8. Force override/overwrite existing directories during blueprint scaffolding
+antigravity-gen --blueprint <blueprint-json-path> --force
 ```
 
 ---

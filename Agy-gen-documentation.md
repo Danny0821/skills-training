@@ -235,3 +235,35 @@ Automatically generated in newly scaffolded skill directories, customized to the
 * **Trigger scope**: Evaluates pushes and pull requests targeting master/main branches.
 * **Environment Provisioning**: Sets up node/python environment dynamically based on selected runtime during scaffolding.
 * **Scan execution**: Executes the verification pipeline (`node scripts/security_check.js` or `python scripts/security_check.py`) and runs a zero-dependency static regular expression sweep (`grep -rnE "[a-zA-Z0-9_-]{24,}"`) across workspace files.
+
+---
+
+## 🤖 11. Agentic Interviewing & Conversational Scaffolding (Release 0.6.0)
+
+Introduces conversational scaffolding utilizing the Agentic Interview Protocol (`/interview`) and non-interactive JSON blueprint declarations (`--blueprint`).
+
+### 1. Conversational Agentic Playbooks
+The interview logic is fully managed by the isolated **`agentic-interviewer`** skill playbook (`.agent/skills/agentic-interviewer/`):
+* **Triggers**: Registered globally in the slash command manifests registry to capture the `/interview` command.
+* **Onboarding**: Conducts an XML-guided UPA interview, asking jargon-free business questions (scoping project goals, roles, and environments) and automatically maps replies to DevTeam archetypes.
+* **Synthesis**: Synthesizes the coordinated multi-agent team blueprint JSON and writes it to `scratch/blueprint.json`.
+
+### 2. Multi-Skill JSON Blueprint Schema
+The declarative blueprint represents complete, integrated teams. Standard schema attributes:
+* `projectName`: Absolute or relative path to the target folder.
+* `coordinationRules`: Shared DMCP choreographed fallback rules for the team.
+* `skills`: An array of skill objects containing name, archetype, description, language, triggers, tags, custom tasks, and reviews.
+
+### 3. Non-Interactive CLI Scaffolding Pipeline
+Extended command-line capabilities to parse JSON configurations natively:
+```bash
+# Scaffold the entire coordinated multi-agent team zero-interactively
+agy-gen --blueprint scratch/blueprint.json
+
+# Override directory collision safeguards
+agy-gen --blueprint scratch/blueprint.json --force
+```
+
+### 4. Overwrite Safeguard Protocol
+* **Default behavior**: If target folders exist, the engine aborts safely with Exit Code 1.
+* **Override behavior**: Appending `--force` / `-f` forces a complete rebuild of the target directories.

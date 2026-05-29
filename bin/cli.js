@@ -32,6 +32,8 @@ Options:
   -s, --search <term>    Fuzzy search for registered skills by name or tag
   -c, --scan <path>      Scan a directory recursively to discover and register skills
   -r, --remove <name>    Unregister a skill from global index. Add --purge to delete files.
+  -b, --blueprint <path> Scaffold multi-skill systems non-interactively from a JSON blueprint
+  -f, --force            Overwrite existing directories during blueprint scaffolding
   -h, --help             Display this help menu
 
 If no options are specified, the interactive component generator will run.
@@ -65,7 +67,9 @@ function parseCliArgs(args) {
     scan: null,
     remove: null,
     purge: false,
-    help: false
+    help: false,
+    blueprint: null,
+    force: false
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -89,6 +93,11 @@ function parseCliArgs(args) {
       i++; // Skip next argument
     } else if (arg === '--purge') {
       options.purge = true;
+    } else if (arg === '--blueprint' || arg === '-b') {
+      options.blueprint = args[i + 1] || '';
+      i++; // Skip next argument
+    } else if (arg === '--force' || arg === '-f') {
+      options.force = true;
     }
   }
 
@@ -103,6 +112,38 @@ async function handleCommands() {
   if (options.help) {
     printHelp();
     process.exit(0);
+  }
+
+  // 1.5 Blueprint Command
+  if (options.blueprint !== null) {
+    const blueprintPath = options.blueprint;
+    if (!blueprintPath) {
+      console.error("🔴 Error: Please specify a blueprint JSON file path (e.g. agy-gen --blueprint scratch/blueprint.json).");
+      process.exit(1);
+    }
+
+    const absolutePath = path.resolve(blueprintPath);
+    if (!fs.existsSync(absolutePath)) {
+      console.error(`🔴 Error: Blueprint file does not exist at: ${absolutePath}`);
+      process.exit(1);
+    }
+
+    // Dynamic import to execute scaffoldFromBlueprint in scripts/generate.js
+    const generatePath = path.resolve(__dirname, '../scripts/generate.js');
+    const generateUrl = pathToFileURL(generatePath).href;
+
+    try {
+      const module = await import(generateUrl);
+      if (module.scaffoldFromBlueprint) {
+        await module.scaffoldFromBlueprint(absolutePath, options.force);
+        process.exit(0);
+      } else {
+        throw new Error("scaffoldFromBlueprint() not exported in scripts/generate.js.");
+      }
+    } catch (err) {
+      console.error("🔴 Blueprint scaffolding failed:", err.message);
+      process.exit(1);
+    }
   }
 
   // 2. List Command

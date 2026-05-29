@@ -423,7 +423,7 @@ if __name__ == "__main__":
 `;
     fs.writeFileSync(path.join(targetDir, 'scripts/security_check.py'), pythonScript, 'utf-8');
     console.log(`  🟢 Created: scripts/security_check.py`);
-  } else {
+  } else if (targetScriptLang === 'js') {
     const mockScript = `/**
  * Verification script for ${name}
  * High-quality, robust validation.
@@ -445,6 +445,8 @@ if (!verifyEnvironment()) {
 `;
     fs.writeFileSync(path.join(targetDir, 'scripts/security_check.js'), mockScript, 'utf-8');
     console.log(`  🟢 Created: scripts/security_check.js`);
+  } else {
+    console.log(`  🟢 Bypassed verification script (language: ${targetScriptLang})`);
   }
 
   // Scaffold evals.json
@@ -706,6 +708,133 @@ export async function scaffoldSkillSystem(options) {
   }
 
   console.log(`\n🟢 Skill System [${name}] fully scaffolded with ${subSkills.length} sub-agents/skills!`);
+}
+
+/**
+ * Validates the schema of a synthesized blueprint object.
+ * Maps missing attributes to safe architectural defaults.
+ * @param {Object} rawBlueprint - Raw parsed JSON blueprint.
+ * @returns {Object} Validated, normalized blueprint.
+ */
+export function validateBlueprint(rawBlueprint) {
+  if (!rawBlueprint || typeof rawBlueprint !== 'object') {
+    throw new Error("Invalid blueprint format: Must be an object.");
+  }
+  if (!rawBlueprint.projectName) {
+    throw new Error("Mandatory field 'projectName' is missing.");
+  }
+  if (!rawBlueprint.skills || !Array.isArray(rawBlueprint.skills)) {
+    throw new Error("Mandatory field 'skills' is missing or not an array.");
+  }
+
+  const validArchetypes = ['pm', 'architect', 'devops', 'developer', 'qa', 'auditor'];
+
+  const validatedSkills = rawBlueprint.skills.map((skill, index) => {
+    if (!skill || typeof skill !== 'object') {
+      throw new Error(`Skill at index ${index} is not an object.`);
+    }
+    if (!skill.name || !skill.archetype || !skill.description) {
+      throw new Error(`Skill at index ${index} requires 'name', 'archetype', and 'description'.`);
+    }
+    if (!validArchetypes.includes(skill.archetype)) {
+      throw new Error(`Skill '${skill.name}' has invalid archetype '${skill.archetype}'.`);
+    }
+
+    return {
+      name: skill.name,
+      archetype: skill.archetype,
+      description: skill.description,
+      language: skill.language || 'default', // Cascading Agnostic Default fallback
+      triggers: Array.isArray(skill.triggers) ? skill.triggers : [],
+      requirements: Array.isArray(skill.requirements) ? skill.requirements : [],
+      customTasks: Array.isArray(skill.customTasks) ? skill.customTasks : [],
+      customReviews: Array.isArray(skill.customReviews) ? skill.customReviews : []
+    };
+  });
+
+  return {
+    projectName: rawBlueprint.projectName,
+    coordinationRules: rawBlueprint.coordinationRules || '',
+    skills: validatedSkills
+  };
+}
+
+/**
+ * Executes non-interactive multi-skill scaffolding from a JSON blueprint file.
+ * Protects against accidental overwrites unless force flag is supplied.
+ * @param {string} blueprintPath - Absolute path to blueprint JSON file.
+ * @param {boolean} force - Overwrite existing directories if true.
+ */
+export async function scaffoldFromBlueprint(blueprintPath, force = false) {
+  console.log("=====================================================");
+  console.log("       Executing Declarative Blueprint Scaffolding   ");
+  console.log("=====================================================\n");
+
+  const rawContent = fs.readFileSync(blueprintPath, 'utf8');
+  let rawBlueprint;
+  try {
+    rawBlueprint = JSON.parse(rawContent);
+  } catch (err) {
+    throw new Error(`Blueprint file contains invalid JSON: ${err.message}`);
+  }
+
+  const blueprint = validateBlueprint(rawBlueprint);
+  const targetDir = path.resolve(blueprint.projectName);
+
+  // Overwrite Protection (Safety Protocol)
+  if (fs.existsSync(targetDir) && !force) {
+    console.error(`🔴 Aborted: Target project directory already exists at: ${targetDir}`);
+    console.error("To overwrite this folder, execute again with the --force flag.");
+    process.exit(1);
+  }
+
+  console.log(`📂 Project Name: \x1b[36m${path.basename(targetDir)}\x1b[0m`);
+  console.log(`📂 Target Path: \x1b[90m${targetDir}\x1b[0m\n`);
+
+  ensureDirectory(targetDir);
+
+  // Write central coordinated playbook files for the team
+  const roadmapPath = path.join(targetDir, 'lessons_index.md');
+  const playbookPath = path.join(targetDir, 'playbook.md');
+
+  const roadmapContent = `# Coordinated Team Issue Index
+
+> Coordinated multi-skill team lessons database. Matches playbook anchors.
+`;
+  const playbookContent = `# Coordinated Team Playbook
+
+> Coordinated multi-skill DMCP playbook.
+`;
+
+  // Write files
+  fs.writeFileSync(roadmapPath, roadmapContent, 'utf-8');
+  fs.writeFileSync(playbookPath, playbookContent, 'utf-8');
+
+  // Traverse skills and scaffold sequentially
+  for (const skill of blueprint.skills) {
+    const skillDir = path.join(targetDir, 'skills', skill.name);
+    
+    // Scaffolding skill natively
+    scaffoldSkill({
+      name: skill.name,
+      description: skill.description,
+      tags: skill.archetype, // Fallback to archetype name
+      targetDir: skillDir,
+      isSubSkill: true,
+      localOnly: false, // Default: register in global indexing catalog
+      creationMode: 'advanced',
+      archetype: skill.archetype,
+      customTriggers: skill.triggers,
+      customRequirements: skill.requirements,
+      customTasks: skill.customTasks,
+      customReviews: skill.customReviews,
+      scriptLanguage: skill.language
+    });
+  }
+
+  console.log("\n=====================================================");
+  console.log("🎉 Coordinated Multi-Skill Team Scaffolding Completed!");
+  console.log("=====================================================");
 }
 
 /**

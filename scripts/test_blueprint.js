@@ -1,0 +1,101 @@
+/**
+ * TDD Unit Verification Suite for Agy-Gen Blueprint Validation Engine
+ */
+
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { validateBlueprint } from './generate.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+function assertThrows(fn, expectedMsg) {
+  try {
+    fn();
+    throw new Error("Expected function to throw an error, but it returned successfully.");
+  } catch (err) {
+    if (!err.message.includes(expectedMsg)) {
+      throw new Error(`Assertion failed: Expected error containing "${expectedMsg}", but got: "${err.message}"`);
+    }
+    console.log(`  ✓ Successfully caught expected validation error: "${expectedMsg}"`);
+  }
+}
+
+function runTests() {
+  console.log("=====================================================");
+  console.log("   Running Blueprint Validation Engine Unit Tests    ");
+  console.log("=====================================================\n");
+
+  try {
+    // 1. Valid Minimal Blueprint
+    console.log("🧪 Test Case 1: Parsing a valid minimal blueprint...");
+    const validMinimal = {
+      projectName: "web-portal",
+      skills: [
+        {
+          name: "web-pm",
+          archetype: "pm",
+          description: "Scrum PM"
+        }
+      ]
+    };
+    const parsed = validateBlueprint(validMinimal);
+    if (parsed.projectName !== "web-portal") throw new Error("Parsed projectName mismatch");
+    if (parsed.skills[0].language !== "default") throw new Error("Expected default language cascade fallback");
+    console.log("  🟢 Test Case 1 passed successfully!\n");
+
+    // 2. Reject Missing Mandatory Fields
+    console.log("🧪 Test Case 2: Rejecting blueprints missing mandatory fields...");
+    assertThrows(() => validateBlueprint({}), "Mandatory field 'projectName' is missing");
+    assertThrows(() => validateBlueprint({ projectName: "web-portal" }), "Mandatory field 'skills' is missing or not an array");
+    console.log("  🟢 Test Case 2 passed successfully!\n");
+
+    // 3. Reject Invalid Skill Details
+    console.log("🧪 Test Case 3: Rejecting invalid skill specifications...");
+    assertThrows(() => validateBlueprint({
+      projectName: "web-portal",
+      skills: [
+        { name: "web-pm" } // Missing archetype & description
+      ]
+    }), "Skill at index 0 requires 'name', 'archetype', and 'description'");
+    
+    assertThrows(() => validateBlueprint({
+      projectName: "web-portal",
+      skills: [
+        { name: "web-pm", archetype: "designer", description: "Design" } // Invalid archetype
+      ]
+    }), "Skill 'web-pm' has invalid archetype 'designer'");
+    console.log("  🟢 Test Case 3 passed successfully!\n");
+
+    // 4. Default Assignments & Normalizations
+    console.log("🧪 Test Case 4: Verifying default assignments & normalizations...");
+    const rawBlueprint = {
+      projectName: "portal-app",
+      coordinationRules: "Standard coordinated flow",
+      skills: [
+        {
+          name: "auditor-skill",
+          archetype: "auditor",
+          description: "Security",
+          language: "py",
+          tags: ["security", "audit"]
+        }
+      ]
+    };
+    const norm = validateBlueprint(rawBlueprint);
+    if (!Array.isArray(norm.skills[0].triggers)) throw new Error("Expected triggers to be normalized to empty array");
+    if (norm.skills[0].language !== "py") throw new Error("Expected language setting preservation");
+    console.log("  🟢 Test Case 4 passed successfully!\n");
+
+    console.log("=====================================================");
+    console.log("🎉 All Blueprint Validation Unit Tests passed successfully!");
+    console.log("=====================================================");
+    process.exit(0);
+  } catch (err) {
+    console.error(`\n❌ Unit tests failed: ${err.message}`);
+    process.exit(1);
+  }
+}
+
+runTests();

@@ -1,0 +1,7 @@
+{
+  "name": "agentic-interviewer",
+  "description": "Conversational onboarding interviewer that grills you about your project and scaffolds coordinated teams.",
+  "version": "0.1.0",
+  "triggers": ["/interview"],
+  "skillPath": ".agent/skills/agentic-interviewer"
+}
