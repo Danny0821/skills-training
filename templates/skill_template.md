@@ -23,6 +23,7 @@ requirements:
   - Target system: {{NAME}}
   - Primary triggers: {{TAGS}}
   - Always consult lessons_index.md and playbook.md before execution to bypass regression.
+  {{COORDINATION_RULES}}
   </context>
 
   <task_definition>

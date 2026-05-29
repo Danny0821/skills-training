@@ -97,6 +97,136 @@ function scaffoldAutolearner(targetDir, componentName) {
 }
 
 /**
+ * 6 DevTeam Archetypes Profiles Registry
+ * Each profile strictly maps to one of the 6 roles of a high-performance software organization,
+ * completely eliminating cross-stack AI slop and dynamic greenfield conflicts.
+ */
+export const ARCHETYPE_PROFILES = {
+  pm: {
+    description: "Product Manager / Coordinator",
+    tone: "Dense, Caveman-style, zero-filler. Focus on roadmaps, priorities, and backlog coordination.",
+    requirements: ['"host-environment: >=v1"'],
+    tasks: [
+      "Environment Discovery & PM Backlog Setup:\n    1. Inspect target workspace state. If C#/.js/Rust project files already exist, align backlog with active technology stacks.\n    2. If workspace is empty (Greenfield): scaffold the central project roadmap and backlog definitions in the repository root (e.g., `ROADMAP.md` or `BACKLOG.md`). Do not write application code.",
+      "Track and update project milestones, feature sets, and task lists.",
+      "Coordinate deliverable tracking and project telemetry logs."
+    ],
+    reviews: [
+      "Verify complete backlog structure alignment with user requests.",
+      "Assert clear priority tags exist on all task items.",
+      "Confirm ROADMAP.md is successfully committed in repository root."
+    ],
+    coordinationRules: "- **Lifecycle Coordination (DMCP)**:\n    1. **Orchestrated Mode**: If a parent coordinator is active, follow specific scheduling directives.\n    2. **Choreographed Fallback**: You are a Product Manager (PM). If the workspace is empty, you have priority. Execute immediately to output the roadmap, unblocking design and engineering phases.",
+    scriptLanguage: 'js'
+  },
+  architect: {
+    description: "Designer / Software Architect",
+    tone: "Dense, Caveman-style, zero-filler. Focus on system design, database schemas, and UX workflows.",
+    requirements: ['"rest-api: >=v1"', '"json-schema: >=draft-07"'],
+    tasks: [
+      "Environment Discovery & Blueprints Setup:\n    1. Inspect workspace. If C#/.js/Rust files exist, align schemas with active code layouts.\n    2. If workspace is empty (Greenfield): analyze PM backlog and design database schemas (SQL), API endpoints, UX flows, and system architectures. Save these wireframes and blueprint specs inside `docs/architecture/` (e.g., `schema.sql` or `wireframes.md`). Do not write application code.",
+      "Verify JSON schema compliance between mock structures and target integration platforms."
+    ],
+    reviews: [
+      "Verify database schema is normalized (e.g., 3NF compliance for SQL).",
+      "Confirm wireframes and API contracts exist inside `docs/architecture/` folder."
+    ],
+    coordinationRules: "- **Lifecycle Coordination (DMCP)**:\n    1. **Orchestrated Mode**: If a parent coordinator is active, follow specific scheduling directives.\n    2. **Choreographed Fallback**: You are a Designer/Architect. If the workspace is empty, you have priority. Execute immediately to save specs and schemas, unblocking DevOps and developers.",
+    scriptLanguage: 'js'
+  },
+  devops: {
+    description: "DevOps / Infrastructure Engineer",
+    tone: "Dense, Caveman-style, zero-filler. Focus on virtualization, containers, and deployment scripts.",
+    requirements: ['"host-environment: >=v1"', '"docker: >=20"'],
+    tasks: [
+      "Environment Discovery & DevOps setups:\n    1. Inspect workspace. If database schemas or architecture blueprints exist, align Docker/CI files.\n    2. If workspace is empty (Greenfield): scaffold virtualization and environment configurations (e.g., `Dockerfile`, `docker-compose.yml`, CI/CD workflow `.github/workflows/deploy.yml`, and environment variable templates `.env.example`). Do not write core business logic.",
+      "Verify environment virtualization setups and CI/CD pipelines run cleanly."
+    ],
+    reviews: [
+      "Verify multi-stage container optimization exists in Dockerfiles.",
+      "Confirm CI/CD pipeline configurations verify host lint standards.",
+      "Assert secrets and credentials are kept in env templates, never hardcoded."
+    ],
+    coordinationRules: "- **Lifecycle Coordination (DMCP)**:\n    1. **Orchestrated Mode**: If a parent coordinator is active, follow specific scheduling directives.\n    2. **Choreographed Fallback**: You are a DevOps Engineer. If no codebase exists, configure the virtualization (Dockerfile, compose) based on database specs. Yield code execution until developers bootstrap files.",
+    scriptLanguage: 'js'
+  },
+  developer: {
+    description: "Developer / Software Creator",
+    tone: "Dense, Caveman-style, zero-filler. Focus on modular coding, compiler/runtime compliance, and unit TDD.",
+    requirements: ['"node: >=[HOST_NODE_VERSION]"'],
+    tasks: [
+      "Environment Discovery & Bootstrapping:\n    1. Inspect workspace. If code exists, integrate modular changes cleanly.\n    2. If workspace is empty (Greenfield): read database schemas, design specs, and security policies inside `docs/`. Select the target runtime (C#/Python/Node) and bootstrap the environment immediately (`dotnet new`, `npm init -y`, `cargo init`) before coding.",
+      "Target compiler/runtime executions at the highest modern standard flag supported by host compiler (e.g., C# 12, Python 3.12, C++20).",
+      "Verify logic correctness: Compile/run code and verify correctness against active unit test suites (e.g. Catch2, Google Test, pytest, Jest) in sandbox rather than solely reading code/comments."
+    ],
+    reviews: [
+      "Before edit: Scan dependency files for outdated packages.",
+      "Verify code compiles and executes flawlessly under the maximum modern language standard supported by the host.",
+      "Run test runner script and verify 100% test assertion success."
+    ],
+    coordinationRules: "- **Lifecycle Coordination (DMCP)**:\n    1. **Orchestrated Mode**: If a parent coordinator is active, follow specific scheduling directives.\n    2. **Choreographed Fallback**: You are a Developer. If the workspace is empty and no design blueprints or backlog milestones exist in `docs/` or `ROADMAP.md`, immediately yield execution. Instruct Designer/PM skills in the workspace to run first.",
+    scriptLanguage: 'js'
+  },
+  qa: {
+    description: "QA / Test Automation Engineer",
+    tone: "Dense, Caveman-style, zero-filler. Focus on E2E testing, API tests, and performance validation.",
+    requirements: ['"host-environment: >=v1"'],
+    tasks: [
+      "Environment Discovery & QA setup:\n    1. If workspace is empty (Greenfield): draft the validation plan, E2E checklists, and mock test fixtures. Save test plans in `tests/` and wait for developer codebase bootstrapping.\n    2. Once codebase is initialized: write automated E2E/integration tests (e.g., Playwright, Cypress, unittest) in `tests/`.",
+      "Verify system performance, rate-limiting, and error-path node coverages."
+    ],
+    reviews: [
+      "Verify test coverage satisfies E2E user-flow paths.",
+      "Confirm test mock fixtures represent clean, isolated payloads.",
+      "Run test runner script and verify 100% test assertion success."
+    ],
+    coordinationRules: "- **Lifecycle Coordination (DMCP)**:\n    1. **Orchestrated Mode**: If a parent coordinator is active, follow specific scheduling directives.\n    2. **Choreographed Fallback**: You are a QA Engineer. If the workspace is empty, draft test plans in `tests/` and yield E2E execution until developer bootstrapping is complete.",
+    scriptLanguage: 'js'
+  },
+  auditor: {
+    description: "Security Auditor / Safety Gate",
+    tone: "Dense, Caveman-style, zero-filler. Focus on static security, threat modeling, and OWASP compliance.",
+    requirements: ['"host-environment: >=v1"'],
+    tasks: [
+      "Environment Discovery & Security Setup:\n    1. If workspace is empty (Greenfield): write threat models, OWASP check lists, and static scan configs (e.g., Semgrep/Trivy rules) in `docs/security/` to establish safety guardrails.\n    2. Once codebase is bootstrapped: actively scan source code for potential vulnerabilities, buffer overflows, or unsafe raw pointers.",
+      "Scan all project files for hardcoded secrets, keys, or plaintext credentials."
+    ],
+    reviews: [
+      "Verify complete absence of hardcoded keys/secrets across all repository files.",
+      "Confirm OWASP-10 compliant safety gates are satisfied in threat models.",
+      "Run security scan tools and verify zero critical vulnerabilities exist."
+    ],
+    coordinationRules: "- **Lifecycle Coordination (DMCP)**:\n    1. **Orchestrated Mode**: If a parent coordinator is active, follow specific scheduling directives.\n    2. **Choreographed Fallback**: You are a Security Auditor. If the workspace is empty, write threat models to `docs/security/` first, and yield active code security scans until developer bootstrapping is complete.",
+    scriptLanguage: 'py'
+  }
+};
+
+/**
+ * Dynamic Archetype Classifier
+ * Automatically categorizes the target skill based on keywords inside its name, description, and tags.
+ */
+export function detectArchetype(name, description, tags) {
+  const cleanInput = `${name} ${description} ${tags}`.toLowerCase();
+  
+  if (/\b(pm|product|manager|roadmap|backlog|scrum|coordinator)\b/.test(cleanInput)) {
+    return 'pm';
+  }
+  if (/\b(architect|design|ux|ui|database|schema|fig|figma|blueprint)\b/.test(cleanInput)) {
+    return 'architect';
+  }
+  if (/\b(devops|deploy|docker|compose|cicd|actions|pipeline|infra|infrastructure)\b/.test(cleanInput)) {
+    return 'devops';
+  }
+  if (/\b(qa|test|e2e|cypress|playwright|jmeter|selenium|tester|testing)\b/.test(cleanInput)) {
+    return 'qa';
+  }
+  if (/\b(security|audit|scanner|compliance|threat|owasp|auditor|safety|guardrail)\b/.test(cleanInput)) {
+    return 'auditor';
+  }
+  return 'developer'; // Fallback to developer
+}
+
+/**
  * Scaffolds a single Skill workspace.
  * @param {Object} options Scaffolding options.
  */
@@ -109,16 +239,22 @@ export function scaffoldSkill(options) {
     isSubSkill = false,
     localOnly = false,
     creationMode = 'quick',
+    archetype = null,
     customTriggers = [],
     customRequirements = [],
     customTasks = [],
     customReviews = [],
-    scriptLanguage = 'js'
+    scriptLanguage = null
   } = options;
 
   console.log(`\nScaffolding Skill: ${name}...`);
   ensureDirectory(targetDir);
   ensureDirectory(path.join(targetDir, 'scripts'));
+
+  // 1. Resolve Archetype
+  const resolvedArchetype = archetype || detectArchetype(name, description, tags);
+  const profile = ARCHETYPE_PROFILES[resolvedArchetype] || ARCHETYPE_PROFILES.developer;
+  console.log(`  🟢 Profile matched: ${profile.description} [${resolvedArchetype}]`);
 
   // Read skill template
   const tmplPath = path.join(TEMPLATE_DIR, 'skill_template.md');
@@ -144,24 +280,25 @@ export function scaffoldSkill(options) {
   if (creationMode === 'advanced' && customRequirements.length > 0) {
     requirementLines = customRequirements.map(r => `"${r.trim()}"`);
   } else {
-    // Option 2: Scaffolding-Time Host Baselining
-    const activeNodeMajor = process.versions.node.split('.')[0];
-    requirementLines = [`"node: >=${activeNodeMajor}"`];
-
-    // Detect Python standard if we target python scripts
-    if (scriptLanguage === 'py') {
-      let pythonVersion = '>=3.10';
-      try {
-        const stdout = execSync('python3 --version || python --version', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
-        const match = stdout.match(/Python\s+([0-9]+\.[0-9]+)/i);
-        if (match) {
-          pythonVersion = `>=${match[1]}`;
-        }
-      } catch (e) {
-        // Safe fallback
+    // Dynamic Host Baselining on Profile-based Requirements (Option 2)
+    const nodeMajor = process.versions.node.split('.')[0];
+    let pythonVersion = '>=3.10';
+    try {
+      const stdout = execSync('python3 --version || python --version', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+      const match = stdout.match(/Python\s+([0-9]+\.[0-9]+)/i);
+      if (match) {
+        pythonVersion = `>=${match[1]}`;
       }
-      requirementLines.push(`"python: ${pythonVersion}"`);
+    } catch (e) {
+      // Safe fallback
     }
+
+    requirementLines = profile.requirements.map(req => {
+      let r = req;
+      r = r.replace('[HOST_NODE_VERSION]', nodeMajor);
+      r = r.replace('[HOST_PYTHON_VERSION]', pythonVersion);
+      return r;
+    });
   }
   const requirementsListStr = requirementLines.map(r => `- ${r}`).join('\n  ');
 
@@ -170,13 +307,7 @@ export function scaffoldSkill(options) {
   if (creationMode === 'advanced' && customTasks.length > 0) {
     taskLines = customTasks.map(t => t.trim()).filter(Boolean);
   } else {
-    // Option 1: Semantic Standard Target & Active TDD instructions
-    taskLines = [
-      `Learn context: Read lessons_index.md for known issues.`,
-      `Execute tasks securely. Target compiler/runtime executions at the highest modern standard flag supported by the host environment.`,
-      `Verify logic correctness: Always compile/run code and verify correctness against active unit test suites (e.g. Catch2, Google Test, pytest, Jest) rather than solely reading code/comments.`,
-      `Log mistakes: Write newly learned facts to lessons_index.md.`
-    ];
+    taskLines = profile.tasks;
   }
   const playbookStepsStr = taskLines.map(t => `- ${t}`).join('\n');
 
@@ -185,16 +316,14 @@ export function scaffoldSkill(options) {
   if (creationMode === 'advanced' && customReviews.length > 0) {
     reviewLines = customReviews.map(r => r.trim()).filter(Boolean);
   } else {
-    reviewLines = [
-      `Before edit: Scan files for vulnerabilities.`,
-      `Verify code compiles and executes flawlessly under the maximum modern language standard supported by the host.`,
-      `Run test runner script and verify 100% test assertion success.`,
-      `Stop on critical issue. Ask user before overwrite config.`
-    ];
+    reviewLines = profile.reviews;
   }
   const reviewChecksStr = reviewLines.map(r => `- ${r}`).join('\n');
 
-  // Hydrate template variables
+  // Resolve Script Language
+  const targetScriptLang = scriptLanguage || profile.scriptLanguage || 'js';
+
+  // Hydrate template variables (DMCP & Dynamic tag hydration)
   const hydrated = hydrateTemplate(template, {
     NAME: name,
     DESCRIPTION: description,
@@ -202,7 +331,8 @@ export function scaffoldSkill(options) {
     TRIGGERS_LIST: triggersListStr,
     REQUIREMENTS_LIST: requirementsListStr,
     PLAYBOOK_STEPS: playbookStepsStr,
-    REVIEW_CHECKS: reviewChecksStr
+    REVIEW_CHECKS: reviewChecksStr,
+    COORDINATION_RULES: profile.coordinationRules
   });
 
   // Write SKILL.md
@@ -214,7 +344,7 @@ export function scaffoldSkill(options) {
   ensureDirectory(path.join(targetDir, 'evals'));
 
   // Write a mock security-first placeholder script under scripts/
-  if (scriptLanguage === 'py') {
+  if (targetScriptLang === 'py') {
     const pythonScript = `#!/usr/bin/env python3
 """
 Verification script for ${name}
@@ -339,6 +469,10 @@ export function scaffoldAgent(options) {
 
   console.log(`\nScaffolding Agent Profile: ${name}...`);
   ensureDirectory(targetDir);
+
+  const resolvedArchetype = detectArchetype(name, description, role);
+  const profile = ARCHETYPE_PROFILES[resolvedArchetype] || ARCHETYPE_PROFILES.developer;
+  console.log(`  🟢 Agent Profile matched: ${profile.description} [${resolvedArchetype}]`);
 
   const tmplPath = path.join(TEMPLATE_DIR, 'agent_template.md');
   if (!fs.existsSync(tmplPath)) {
@@ -535,10 +669,22 @@ export async function main() {
         let customTasks = [];
         let customReviews = [];
         let scriptLanguage = 'js';
+        let archetype = null;
 
         if (creationMode === 'advanced') {
           console.log("\n--- Advanced Customization Loop ---");
-          const triggersInput = await askQuestion("Enter comma-separated triggers (e.g. /my-cmd, context: check): ");
+          console.log("Select Skill Archetype:");
+          console.log("  [1] Developer / Creator (Active coding, TDD, bootstrapping)");
+          console.log("  [2] Designer / Architect (UX design, DB schema, wireframes)");
+          console.log("  [3] DevOps / Infrastructure (CI/CD, Docker, pipelines)");
+          console.log("  [4] QA / Test Engineer (E2E testing, playwright, mock fixtures)");
+          console.log("  [5] Security Auditor / Safety Gate (OWASP scanning, threat models)");
+          console.log("  [6] Product Manager / Coordinator (ROADMAP.md, Scrum backlog)");
+          const archChoice = (await askQuestion("Enter selection (1-6, Default: 1): ")).trim() || '1';
+          const archMap = { '1': 'developer', '2': 'architect', '3': 'devops', '4': 'qa', '5': 'auditor', '6': 'pm' };
+          archetype = archMap[archChoice] || 'developer';
+
+          const triggersInput = await askQuestion("\nEnter comma-separated triggers (e.g. /my-cmd, context: check): ");
           if (triggersInput.trim()) {
             customTriggers = triggersInput.split(',').map(t => t.trim()).filter(Boolean);
           }
@@ -575,6 +721,7 @@ export async function main() {
           targetDir,
           localOnly,
           creationMode,
+          archetype,
           customTriggers,
           customRequirements,
           customTasks,

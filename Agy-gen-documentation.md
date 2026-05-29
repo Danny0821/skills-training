@@ -159,3 +159,34 @@ Introduces Quick vs. Advanced modes to interactively build skills with custom re
    * Playbook tasks now explicitly instruct the agent to query and target the **highest compiler/runtime standard supported by the host** (Option 1) and to actively execute unit tests (Catch2, GTest, Pytest, Jest) to verify logic instead of relying on static comments code reviews.
 4. **Dynamic Tags Hydration**:
    * `{{TAGS}}` is dynamically resolved and written to `<context>` blocks, eliminating plain placeholders.
+
+---
+
+## 👥 8. Dual-Mode Coordination Protocol & Archetypes (Release 0.4.2)
+
+Resolves "AI slop" technology mixing and Greenfield (empty workspace) multi-agent initialization.
+
+### The 6 DevTeam Archetypes
+1. **Product Manager (`pm`)**: Roadmaps (`ROADMAP.md`), priority backlogs. Zero coding.
+2. **Designer / Architect (`architect`)**: Normal SQL schemas, API schemas, wireframes (`docs/architecture/`). Zero coding.
+3. **DevOps / Infra (`devops`)**: Optimized multi-stage Dockerfiles, compose, CI/CD actions. Zero business logic.
+4. **Developer / Creator (`developer`)**: High-modern compiler coding, unit TDD suites, environment bootstrap (`npm init`, `cargo init`).
+5. **QA / Tester (`qa`)**: E2E test suites (Playwright/Cypress), mock fixtures, coverages.
+6. **Security Auditor / Safety (`auditor`)**: Hardened Python static scripts, threat models, secrets scans.
+
+### Dual-Mode Coordination Protocol (DMCP)
+Handles team playbooks dynamically based on directory state:
+* **Orchestrated Mode**: Active parent coordinator governs execution via direct directives.
+* **Choreographed Fallback**: Decentralized self-coordination if no orchestrator exists:
+  * **Greenfield Safety**: If empty, `pm` and `architect` execute immediately to build plans. `devops`, `developer`, `qa`, and `auditor` save specs or immediately yield execution to prerequisite roles.
+  * **Transition Flow**:
+    ```mermaid
+    graph TD
+        EmptyDir[Empty Workspace] --> PM[PM: ROADMAP.md]
+        PM --> Arch[Architect: Schema & Wireframes]
+        Arch --> DevOpt[DevOps: virtualization & CI]
+        Arch --> Dev[Developer: Dotnet / Npm / Cargo bootstrap]
+        Dev --> Code[Core Business Logic & Unit tests]
+        Code --> QA[QA: E2E Playwright tests]
+        Code --> Audit[Auditor: Static OWASP scan]
+    ```

@@ -17,9 +17,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Target test registry and source sandbox folders
-const SANDBOX_REGISTRY_DIR = path.resolve(__dirname, '../output_test/autolearner-test-workspace/sandbox-registry');
+const RUN_ID = Date.now() + Math.random().toString(36).substring(2, 7);
+const SANDBOX_REGISTRY_DIR = path.resolve(__dirname, `../output_test/autolearner-test-workspace/sandbox-registry-${RUN_ID}`);
 process.env.AGY_GEN_TEST_DIR = SANDBOX_REGISTRY_DIR;
-const SOURCE_SANDBOX_DIR = path.resolve(__dirname, '../output_test/autolearner-test-workspace/sandbox-project');
+const SOURCE_SANDBOX_DIR = path.resolve(__dirname, `../output_test/autolearner-test-workspace/sandbox-project-${RUN_ID}`);
 const CLI_PATH = path.resolve(__dirname, '../bin/cli.js');
 
 function cleanRegistry() {
@@ -210,7 +211,61 @@ function runSandboxVerification() {
     if (!postAdvancedList.includes('go-advanced-skill')) {
       throw new Error("Advanced skill was not registered in the global catalog.");
     }
-    console.log("  ✓ Advanced Mode skill creation E2E validated successfully.");
+    
+    // 9. E2E Greenfield Multi-Archetype Self-Coordination Check (DMCP & 6 Archetypes)
+    console.log("\n🧪 Step 9: Verifying dynamic Archetype Classification and DMCP Playbook isolation...");
+    const architectSkillDir = path.join(SOURCE_SANDBOX_DIR, 'figma-to-html-wireframes');
+    const developerSkillDir = path.join(SOURCE_SANDBOX_DIR, 'react-user-dashboard');
+
+    // Scaffolding Architect Skill
+    scaffoldSkill({
+      name: 'figma-to-html-wireframes',
+      description: 'Design wireframes and architectural blueprints for frontend.',
+      tags: 'figma, figma-to-html, wireframes, architect',
+      targetDir: architectSkillDir,
+      creationMode: 'quick',
+      localOnly: true
+    });
+
+    // Scaffolding Developer Skill
+    scaffoldSkill({
+      name: 'react-user-dashboard',
+      description: 'Build React components and frontend interface.',
+      tags: 'react, frontend, dev, component',
+      targetDir: developerSkillDir,
+      creationMode: 'quick',
+      localOnly: true
+    });
+
+    // Assert figma-to-html-wireframes (Architect Archetype) contains correct playbook and DMCP
+    if (!fs.existsSync(path.join(architectSkillDir, 'SKILL.md'))) {
+      throw new Error("Architect skill SKILL.md was not created.");
+    }
+    const archSkillContent = fs.readFileSync(path.join(architectSkillDir, 'SKILL.md'), 'utf8');
+    if (!archSkillContent.includes('docs/architecture/') || !archSkillContent.includes('schema.sql')) {
+      throw new Error("Architect skill is missing dynamic blueprint tasks!");
+    }
+    if (archSkillContent.includes('pytest') || archSkillContent.includes('Catch2') || archSkillContent.includes('npm test')) {
+      throw new Error("AI Slop detected: Architect skill contains software testing references!");
+    }
+    if (!archSkillContent.includes('Choreographed Fallback') || !archSkillContent.includes('You are a Designer/Architect')) {
+      throw new Error("Architect skill is missing the correct DMCP handshake guidelines!");
+    }
+    console.log("  ✓ Architect skill structurally validated (Zero-Slop, Pure Blueprinting, correct DMCP).");
+
+    // Assert react-user-dashboard (Developer Archetype) contains correct playbook and DMCP
+    if (!fs.existsSync(path.join(developerSkillDir, 'SKILL.md'))) {
+      throw new Error("Developer skill SKILL.md was not created.");
+    }
+    const devSkillContent = fs.readFileSync(path.join(developerSkillDir, 'SKILL.md'), 'utf8');
+    if (!devSkillContent.includes('active unit test suites') || !devSkillContent.includes('npm init')) {
+      throw new Error("Developer skill is missing dynamic bootstrapping or TDD tasks!");
+    }
+    if (!devSkillContent.includes('Choreographed Fallback') || !devSkillContent.includes('You are a Developer')) {
+      throw new Error("Developer skill is missing the correct DMCP handshake guidelines!");
+    }
+    console.log("  ✓ Developer skill structurally validated (TDD-Based, correct DMCP).");
+    console.log("  ✓ Multi-Archetype Greenfield self-coordination E2E verified perfectly.");
 
     console.log("\n=====================================================");
     console.log("🎉 E2E Sandbox Registry Verification passed perfectly!");
