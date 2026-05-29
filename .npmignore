@@ -1,0 +1,10 @@
+# Ignore local dev/testing directories
+node_modules/
+output_test/
+feedback/
+codebase-reviews/
+scratch/
+output/
+
+# Exclude installers to prevent Windows Defender / Antivirus blocks on global .ps1/.sh extraction
+installers/

@@ -1,0 +1,6 @@
+# Exclude installers and test outputs from GitHub release/source tarball archives
+installers/ export-ignore
+output_test/ export-ignore
+codebase-reviews/ export-ignore
+feedback/ export-ignore
+scratch/ export-ignore
