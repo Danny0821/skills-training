@@ -170,16 +170,16 @@ Scaffolded skills conform strictly to the **Unified Prompt Architecture (UPA)**,
   <context>Target system dependencies, DMCP lifecycle coordination tags.</context>
   <task_definition>Lint/compilation commands, active unit test TDD parameters.</task_definition>
   <output_format>Output delimiters and exit code standards.</output_format>
-  <scope_constraints>Sandboxed boundary constraints, credentials firewall rules.</scope_constraints>
+  <scope_constraints>
+    - Sandboxed boundary constraints, credentials firewall rules.
+    - Zero-Slop Consent Policy: Stop and ask user clarification on grey areas. No slop.
+    - Loop Limit: Max 10 retries for polling loops/wait cycles.
+  </scope_constraints>
 </instructions>
 
 <review_checks>
 - Verification assertions.
 </review_checks>
-
-<autolearner>
-- lessons_index.md & playbook.md coordinates mappings.
-</autolearner>
 ```
 
 ---
@@ -189,3 +189,17 @@ Scaffolded skills conform strictly to the **Unified Prompt Architecture (UPA)**,
 1. **Credentials Firewall**: Plain-text passwords, tokens, or keys are scanned and completely banned. All templates default securely to env variables.
 2. **Directory Purge Shield**: The `--purge` command deletes physical directories *only* if they reside inside the global user configuration path (`~/.gemini/config/`). Local developer project workspaces are structurally protected from accidental deletions.
 3. **Atomic Registry Writes**: Central database indexes are written to temporary files first (`.tmp`) and then renamed, eliminating registry corruption.
+
+---
+
+## ⚡ 9. Performance, Zero-Slop & Optimization (Release 0.6.9)
+
+High-performance, token-optimized updates designed to streamline agent execution and eliminate resource waste:
+
+* **Renamed Scaffold Folder**: Local scaffolding target directories now default to `./skillsets/` (was `./output/`), avoiding environment locking conflicts.
+* **Zero-Slop Consent Policy**: Generated playbook prompts strictly require agents to stop and clarify specifications in ambiguous areas instead of creating mock data/code.
+* **Loop Retry Limiters**: Quarantined loops to a hard maximum of **10 iterations** to prevent infinite token-draining runs.
+* **Telegraphic Casing**: Templates and instructions are written in dense, filler-free "Telegraphic Casing", yielding a **>50% reduction in playbook token size** and maximizing prefix-caching efficiency.
+* **Quiet Telemetry Logging**: Scaffold creation CLI outputs concise, single-line telemetry summaries, reducing terminal token footprint by **>80%**.
+* **Smart Registry Exclusions**: Recursively ignores compiled/coverage folders (`dist`, `build`, `skillsets`, `coverage`, `tool_tests`) from crawler indexes.
+* **Optimized NPM Package**: Direct exclusion of development and E2E mock suites from packaging via explicit `"files"` configuration inside `package.json`.

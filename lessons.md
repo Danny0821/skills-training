@@ -16,4 +16,7 @@
 - Slash Commands Folder Alignment: Antigravity 2.0 requires global slash command manifests to be placed inside a structured subfolder containing a `SKILL.md` file (e.g., `~/.gemini/skills/{skill_name}/SKILL.md`) instead of flat files to trigger system-wide client discovery.
 - Single-Trigger Directory Limit: The client parser only registers the first trigger declared in the UPA frontmatter of a folder's `SKILL.md`. Active triggers (e.g., `/interview` vs. `/grill-blueprint`) must have separate directory structures to coexist in autocomplete menus.
 - Hidden Folder npm Packaging Constraints: Avoid storing active command templates inside hidden directories (like `.agent/skills/`) inside the npm package registry. Windows environments throw `lstat` unpack warning errors and directory lock contentions. Always relocate them to accessible top-level folders (such as `command_manifests/`).
+- Loop Limit Safeguard: Restrict wait loops and status checks inside playbooks to a maximum of 10 retries to prevent infinite agent execution loops and token depletion.
+- Zero-Slop Consent: Generated prompts must strictly require agents to stop and clarify specifications in ambiguous areas instead of generating fake placeholder content.
+- Crawler Registry Exclusions: Exclude temporary, coverage, and build directories (`build`, `dist`, `skillsets`, `coverage`, `tool_tests`) from crawler indexes to prevent global catalog pollution.
 

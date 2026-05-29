@@ -44,11 +44,15 @@ Every generated `SKILL.md` template is structured according to the **Unified Pro
 ### Schema Template Layout:
 ```xml
 <instructions>
-  <role>Define agent persona/casing.</role>
-  <context>Define module context, conventions guides, autolearner references.</context>
-  <task_definition>Specify exact lint/compilation commands, target folders.</task_definition>
-  <output_format>Define exit codes (0 = Success, 1 = Error) and deliverables.</output_format>
-  <scope_constraints>Strict sandboxing limits, credentials firewalls.</scope_constraints>
+  <role>Skill: NAME. Tone: Dense, Caveman, zero-filler. Maximum accuracy.</role>
+  <context>Check lessons_index.md & playbook.md first. Prevents regressions.</context>
+  <task_definition>Specify exact tasks, tests, compile/runtime commands.</task_definition>
+  <output_format>Write deliverables to files. Use clear XML delimiters for data returns.</output_format>
+  <scope_constraints>
+    - No plaintext keys/credentials. Sandbox boundaries strictly enforced.
+    - Zero-Slop Consent Policy: NEVER write code or run scripts in ambiguous grey areas without confirming with user. Stop and ask clarifying questions in chat first.
+    - Loop Limit: Max 10 retries for polling loops, status checks, or wait cycles. If not complete after 10 iterations, halt and seek directions.
+  </scope_constraints>
 </instructions>
 ```
 
@@ -272,3 +276,33 @@ agy-gen --blueprint scratch/blueprint.json --force
 ### 4. Overwrite Safeguard Protocol
 * **Default behavior**: If target folders exist, the engine aborts safely with Exit Code 1.
 * **Override behavior**: Appending `--force` / `-f` forces a complete rebuild of the target directories.
+
+---
+
+## ⚡ 12. Optimization, Zero-Slop, & Runtime Rules (Release 0.6.9)
+
+High-efficiency, token-saving configurations and safety structures introduced to maximize performance and prevent agent token waste.
+
+### A. Folder Mapping Renaming
+* **Old Standard**: Local scaffolding output folders default to `./output/`.
+* **New Standard**: Default scaffolding output folders renamed to `./skillsets/` to prevent directory locks and package resolution conflicts.
+
+### B. Zero-Slop Consent Policy
+* **Core Rule**: Playbook templates mandate agents stop and dynamically request clarification in "grey areas" (e.g. underspecified roadmap steps, database details) instead of writing placeholder AI slop.
+* **Consent First**: No automated generation of fictitious resumes or company histories without direct user input.
+
+### C. Loop Retry Limiters
+* **Core Rule**: Strict quarantine limit of **max 10 iterations** for all polling loops, wait cycles, or status checks inside playbooks.
+* **Fallback**: Halt, output diagnostics, and seek directions. Prevents infinite execution loops and token drains.
+
+### D. Telegraphic Casing (Prompt Density)
+* **Goal**: Strip all linguistic filler, grammar flow, and prose from templates (`skill_template.md`, `agent_template.md`, etc.).
+* **Result**: >50% reduction in playbook context tokens on every LLM agent turn. Max prefix-caching alignment.
+
+### E. Quiet Mode & Telegraphic Telemetry Logs
+* **Telemetry logging**: CLI logs compressed into compact, single-line telemetry summaries.
+* **Result**: >80% reduction in terminal console history consumption.
+
+### F. Registry Scanner Crawler Exclusions
+* **Crawl Filters**: Excludes heavy compilation and working directories (`build`, `dist`, `skillsets`, `coverage`, `tool_tests`, `node_modules`, `.git`, `.gemini`).
+* **Packaging Optimization**: Direct `"files"` list exclusions of development/E2E test files inside `package.json` to keep NPM distribution tarballs extremely lightweight.
