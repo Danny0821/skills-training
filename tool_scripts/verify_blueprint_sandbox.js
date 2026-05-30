@@ -177,8 +177,69 @@ async function run() {
     throw err;
   }
 
-  // 6. Cleanup
-  console.log("\n🧹 Step 6: Cleaning up E2E test footprints...");
+  // 6. Test Compact Agent Scaffolding Blueprint
+  console.log("\n📦 Step 6: Executing and verifying Compact Multi-Skill Agent blueprint...");
+  const compactBlueprintPath = path.join(SCRATCH_DIR, 'test_compact_blueprint.json');
+  const compactTargetDir = path.join(TEST_OUTPUT_DIR, 'compact-python-team');
+
+  const compactBlueprintContent = {
+    projectName: compactTargetDir,
+    coordinationRules: "DMCP Compact flow",
+    skills: [
+      { name: "python-ui", archetype: "developer", description: "UI" },
+      { name: "python-ai", archetype: "developer", description: "AI" },
+      { name: "python-db", archetype: "developer", description: "DB" }
+    ],
+    agents: [
+      {
+        name: "python-expert",
+        role: "Lead Developer",
+        description: "All-in-one developer",
+        allowedSkills: ["python-ui", "python-ai", "python-db"]
+      }
+    ]
+  };
+
+  fs.writeFileSync(compactBlueprintPath, JSON.stringify(compactBlueprintContent, null, 2), 'utf-8');
+  assertExists(compactBlueprintPath);
+
+  try {
+    const cmd = `node "${path.resolve(__dirname, '../cli_bin/cli.js')}" --blueprint "${compactBlueprintPath}"`;
+    execSync(cmd, { 
+      env: { ...process.env, AGY_GEN_TEST_DIR: REGISTRY_DIR },
+      stdio: 'ignore' 
+    });
+    console.log("  ✓ Compact Blueprint scaffolded successfully!");
+  } catch (err) {
+    console.error("🔴 Compact CLI execution failed:", err.message);
+    throw err;
+  }
+
+  // Assertions for Compact Scaffold
+  assertExists(compactTargetDir);
+  assertExists(path.join(compactTargetDir, 'SYSTEM.md'));
+  assertExists(path.join(compactTargetDir, 'skills/python-ui/SKILL.md'));
+  assertExists(path.join(compactTargetDir, 'skills/python-ai/SKILL.md'));
+  assertExists(path.join(compactTargetDir, 'skills/python-db/SKILL.md'));
+  
+  const agentMdPath = path.join(compactTargetDir, 'agents/python-expert_agent/AGENT.md');
+  assertExists(agentMdPath);
+  
+  // Verify Agent whitelist matches whitelisted allowedSkills YAML list
+  const agentMdContent = fs.readFileSync(agentMdPath, 'utf8');
+  if (!agentMdContent.includes('- "python-ui"') || !agentMdContent.includes('- "python-ai"') || !agentMdContent.includes('- "python-db"')) {
+    throw new Error("Assertion failed: Scaffolded compact AGENT.md missing whitelisted allowedSkills YAML items.");
+  }
+  console.log("  ✓ Verified: Compact agent whitelists all three skills correctly inside AGENT.md!");
+
+  // Clean up compact files
+  if (fs.existsSync(compactBlueprintPath)) {
+    fs.unlinkSync(compactBlueprintPath);
+    console.log("  ✓ Removed temporary compact blueprint JSON.");
+  }
+
+  // 7. Cleanup
+  console.log("\n🧹 Step 7: Cleaning up E2E test footprints...");
   if (fs.existsSync(blueprintPath)) {
     fs.unlinkSync(blueprintPath);
     console.log("  ✓ Removed temporary blueprint JSON.");

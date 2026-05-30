@@ -14,7 +14,6 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { fileURLToPath } from 'url';
-import readline from 'readline';
 import { execSync } from 'child_process';
 import { registerSkill } from './index_manager.js';
 
@@ -22,21 +21,6 @@ import { registerSkill } from './index_manager.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const TEMPLATE_DIR = path.resolve(__dirname, '../templates');
-
-// Set up readline interface for CLI interaction
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-/**
- * Prompts the user via CLI and returns a Promise with the input.
- * @param {string} query The question to display to the user.
- * @returns {Promise<string>} User input.
- */
-function askQuestion(query) {
-  return new Promise((resolve) => rl.question(query, resolve));
-}
 
 /**
  * Hydrates template content by replacing bracket placeholders with values.
@@ -593,13 +577,15 @@ export function scaffoldAgent(options) {
   }
   const template = fs.readFileSync(tmplPath, 'utf-8');
 
-  const skillList = allowedSkills.split(',').map(s => s.trim()).filter(Boolean).join('\n  - ');
+  const skillListYaml = allowedSkills.split(',').map(s => s.trim()).filter(Boolean).map(s => `- "${s}"`).join('\n  ') || '- "none"';
+  const skillListHuman = allowedSkills.split(',').map(s => s.trim()).filter(Boolean).join(', ') || 'none';
 
   const hydrated = hydrateTemplate(template, {
     NAME: name,
     DESCRIPTION: description,
     ROLE: role,
-    ALLOWED_SKILLS: skillList
+    ALLOWED_SKILLS_YAML: skillListYaml,
+    ALLOWED_SKILLS_HUMAN: skillListHuman
   });
 
   fs.writeFileSync(path.join(targetDir, 'AGENT.md'), hydrated, 'utf-8');
@@ -634,11 +620,6 @@ export async function scaffoldSkillSystem(options) {
     let scope = '1'; // Default: Local
     if (childScopes && childScopes[childSkill]) {
       scope = childScopes[childSkill];
-    } else if (options.isInteractive) {
-      console.log(`\nConfigure scope for sub-skill [${childSkill}]:`);
-      console.log(`  [1] Local (inside this system's folder: ./skills/${childSkill})`);
-      console.log(`  [2] Global (system-wide folder: ~/.gemini/config/skills/${childSkill})`);
-      scope = (await askQuestion("Enter selection (1-2, Default: 1): ")).trim() || '1';
     }
     resolvedChildScopes[childSkill] = scope;
   }
@@ -760,10 +741,31 @@ export function validateBlueprint(rawBlueprint) {
     };
   });
 
+  const validatedAgents = Array.isArray(rawBlueprint.agents)
+    ? rawBlueprint.agents.map((agent, index) => {
+        if (!agent || typeof agent !== 'object') {
+          throw new Error(`Agent at index ${index} is not an object.`);
+        }
+        if (!agent.name || !agent.role || !agent.description || !agent.allowedSkills) {
+          throw new Error(`Agent at index ${index} requires 'name', 'role', 'description', and 'allowedSkills'.`);
+        }
+        if (!Array.isArray(agent.allowedSkills)) {
+          throw new Error(`Agent '${agent.name}' must have an array of 'allowedSkills'.`);
+        }
+        return {
+          name: agent.name,
+          role: agent.role,
+          description: agent.description,
+          allowedSkills: agent.allowedSkills.map(s => String(s).trim())
+        };
+      })
+    : [];
+
   return {
     projectName: rawBlueprint.projectName,
     coordinationRules: rawBlueprint.coordinationRules || '',
-    skills: validatedSkills
+    skills: validatedSkills,
+    agents: validatedAgents
   };
 }
 
@@ -818,17 +820,78 @@ export async function scaffoldFromBlueprint(blueprintPath, force = false) {
   fs.writeFileSync(roadmapPath, roadmapContent, 'utf-8');
   fs.writeFileSync(playbookPath, playbookContent, 'utf-8');
 
+  // Compile whitelisted agent list
+  const agentsToScaffold = [];
+  if (blueprint.agents && blueprint.agents.length > 0) {
+    // Blueprint whitelists custom compact agents
+    blueprint.agents.forEach(agent => {
+      agentsToScaffold.push({
+        name: agent.name,
+        description: agent.description,
+        role: agent.role || 'Specialist',
+        allowedSkills: agent.allowedSkills
+      });
+    });
+  } else if (blueprint.skills.length > 1) {
+    // Backward-compatible 1-to-1 default (one agent per skill)
+    blueprint.skills.forEach(skill => {
+      agentsToScaffold.push({
+        name: `${skill.name}-agent`,
+        description: `Specialized agent managing ${skill.name} capabilities.`,
+        role: `${skill.name} specialist`,
+        allowedSkills: [skill.name]
+      });
+    });
+  }
+
+  // Set up directory structures and system manifest if running a multi-agent system
+  if (blueprint.skills.length > 1 || agentsToScaffold.length > 0) {
+    ensureDirectory(path.join(targetDir, 'skills'));
+    ensureDirectory(path.join(targetDir, 'agents'));
+
+    // Write system-wide autolearner
+    scaffoldAutolearner(targetDir, path.basename(targetDir), 'pm', 'js');
+
+    // Compile SYSTEM.md manifest
+    const tmplPath = path.join(TEMPLATE_DIR, 'system_template.md');
+    if (fs.existsSync(tmplPath)) {
+      const template = fs.readFileSync(tmplPath, 'utf-8');
+      const subSkillsList = blueprint.skills.map(s => `- [${s.name}](./skills/${s.name}/SKILL.md)`).join('\n');
+      const subAgentsList = agentsToScaffold.map(a => `- [${a.name}-agent](./agents/${a.name}_agent/AGENT.md)`).join('\n');
+
+      let orchestrator = 'system-coordinator';
+      const pmAgent = agentsToScaffold.find(a => a.name.toLowerCase().includes('pm') || a.name.toLowerCase().includes('coordinator'));
+      if (pmAgent) {
+        orchestrator = pmAgent.name;
+      } else if (agentsToScaffold.length > 0) {
+        orchestrator = agentsToScaffold[0].name;
+      }
+
+      const hydrated = hydrateTemplate(template, {
+        NAME: path.basename(targetDir),
+        ORCHESTRATOR: orchestrator,
+        SUB_SKILLS_LIST: subSkillsList,
+        SUB_AGENTS_LIST: subAgentsList
+      });
+
+      fs.writeFileSync(path.join(targetDir, 'SYSTEM.md'), hydrated, 'utf-8');
+      console.log(`✓ Scaffolded System Manifest [SYSTEM.md]`);
+    }
+  }
+
   // Traverse skills and scaffold sequentially
   for (const skill of blueprint.skills) {
-    const skillDir = path.join(targetDir, 'skills', skill.name);
-    
+    const skillDir = (blueprint.skills.length > 1 || agentsToScaffold.length > 0)
+      ? path.join(targetDir, 'skills', skill.name)
+      : targetDir;
+
     // Scaffolding skill natively
     scaffoldSkill({
       name: skill.name,
       description: skill.description,
       tags: skill.archetype, // Fallback to archetype name
       targetDir: skillDir,
-      isSubSkill: true,
+      isSubSkill: (blueprint.skills.length > 1 || agentsToScaffold.length > 0),
       localOnly: false, // Default: register in global indexing catalog
       creationMode: 'advanced',
       archetype: skill.archetype,
@@ -840,6 +903,18 @@ export async function scaffoldFromBlueprint(blueprintPath, force = false) {
     });
   }
 
+  // Scaffold agents sequentially
+  agentsToScaffold.forEach(agent => {
+    const agentDir = path.join(targetDir, 'agents', `${agent.name}_agent`);
+    scaffoldAgent({
+      name: agent.name,
+      description: agent.description,
+      role: agent.role,
+      allowedSkills: agent.allowedSkills.join(', '),
+      targetDir: agentDir
+    });
+  });
+
   console.log("\n=====================================================");
   console.log("🎉 Coordinated Multi-Skill Team Scaffolding Completed!");
   console.log("=====================================================");
@@ -849,180 +924,5 @@ export async function scaffoldFromBlueprint(blueprintPath, force = false) {
   console.log("   3. Your Product Manager archetype will actively interview you to align on details");
   console.log("      and design system preferences. Follow their guidance to unblock developers!");
   console.log("=====================================================\n");
-}
-
-/**
- * Main Interactive Scaffolding loop.
- */
-export async function main() {
-  console.clear();
-  console.log("==================================================================");
-  console.log("             Antigravity 2.0 Generator Scaffolder CLI            ");
-  console.log("   Zero-Dependency Security-First, Caveman-styled Scaffolding    ");
-  console.log("==================================================================\n");
-
-  try {
-    console.log("Select component type to generate:");
-    console.log("  [1] Standalone Skill");
-    console.log("  [2] Agent Hook / Event Rule");
-    console.log("  [3] Standalone Agent Profile");
-    console.log("  [4] Coordinated Skill System / Multi-Agent Agency");
-    console.log("  [5] Exit\n");
-
-    const choice = (await askQuestion("Enter selection (1-5): ")).trim();
-
-    if (choice === '5') {
-      console.log("Exiting generator. Keep coding!");
-      rl.close();
-      return;
-    }
-
-    const name = (await askQuestion("\nEnter component/system name (e.g. python-security): ")).trim();
-    if (!name) {
-      console.log("🔴 Name cannot be empty.");
-      rl.close();
-      return;
-    }
-
-    console.log("\nSelect target scope for the generated component:");
-    console.log("  [1] Local (project workspace skillsets directory)");
-    console.log("  [2] Global (system-wide Antigravity user config directory)");
-    const scopeChoice = (await askQuestion("Enter selection (1-2, Default: 1): ")).trim() || '1';
-
-    let targetDir;
-    if (scopeChoice === '2') {
-      const globalConfigBase = path.resolve(os.homedir(), '.gemini/config');
-      if (choice === '1' || choice === '4') {
-        targetDir = path.join(globalConfigBase, 'skills', name);
-      } else if (choice === '3') {
-        targetDir = path.join(globalConfigBase, 'agents', name);
-      } else {
-        targetDir = path.join(globalConfigBase, 'skills', name); // default
-      }
-      console.log(`Global scope selected. Target path: ${targetDir}`);
-    } else {
-      const targetBase = (await askQuestion("Enter target output folder path (Default: ./skillsets): ")).trim() || './skillsets';
-      targetDir = path.resolve(process.cwd(), targetBase, name);
-    }
-
-    switch (choice) {
-      case '1': {
-        const description = (await askQuestion("Enter short description: ")).trim() || "Custom Antigravity skill.";
-        const tags = (await askQuestion("Enter comma-separated tags (e.g. security, python, review): ")).trim() || "general";
-        
-        console.log("\nSelect Creation Mode:");
-        console.log("  [1] Quick Creation (Auto-fill with defaults)");
-        console.log("  [2] Advanced Creation (Interactively customize triggers, requirements, and tasks)");
-        const modeChoice = (await askQuestion("Enter selection (1-2, Default: 1): ")).trim() || '1';
-        const creationMode = modeChoice === '2' ? 'advanced' : 'quick';
-
-        let customTriggers = [];
-        let customRequirements = [];
-        let customTasks = [];
-        let customReviews = [];
-        let scriptLanguage = 'js';
-        let archetype = null;
-
-        if (creationMode === 'advanced') {
-          console.log("\n--- Advanced Customization Loop ---");
-          console.log("Select Skill Archetype:");
-          console.log("  [1] Developer / Creator (Active coding, TDD, bootstrapping)");
-          console.log("  [2] Designer / Architect (UX design, DB schema, wireframes)");
-          console.log("  [3] DevOps / Infrastructure (CI/CD, Docker, pipelines)");
-          console.log("  [4] QA / Test Engineer (E2E testing, playwright, mock fixtures)");
-          console.log("  [5] Security Auditor / Safety Gate (OWASP scanning, threat models)");
-          console.log("  [6] Product Manager / Coordinator (ROADMAP.md, Scrum backlog)");
-          const archChoice = (await askQuestion("Enter selection (1-6, Default: 1): ")).trim() || '1';
-          const archMap = { '1': 'developer', '2': 'architect', '3': 'devops', '4': 'qa', '5': 'auditor', '6': 'pm' };
-          archetype = archMap[archChoice] || 'developer';
-
-          const triggersInput = await askQuestion("\nEnter comma-separated triggers (e.g. /my-cmd, context: check): ");
-          if (triggersInput.trim()) {
-            customTriggers = triggersInput.split(',').map(t => t.trim()).filter(Boolean);
-          }
-
-          const reqsInput = await askQuestion("Enter runtime requirements (e.g. node: >=18, python: >=3.10): ");
-          if (reqsInput.trim()) {
-            customRequirements = reqsInput.split(',').map(r => r.trim()).filter(Boolean);
-          }
-
-          const tasksInput = await askQuestion("Enter custom task definitions (semicolon-separated): ");
-          if (tasksInput.trim()) {
-            customTasks = tasksInput.split(';').map(t => t.trim()).filter(Boolean);
-          }
-
-          const reviewsInput = await askQuestion("Enter custom review checks (semicolon-separated): ");
-          if (reviewsInput.trim()) {
-            customReviews = reviewsInput.split(';').map(r => r.trim()).filter(Boolean);
-          }
-
-          console.log("\nSelect Verification Script Language:");
-          console.log("  [1] Node.js (scripts/security_check.js)");
-          console.log("  [2] Python (scripts/security_check.py - Hardened)");
-          const langChoice = (await askQuestion("Enter selection (1-2, Default: 1): ")).trim() || '1';
-          scriptLanguage = langChoice === '2' ? 'py' : 'js';
-        }
-
-        const localOnlyAnswer = (await askQuestion("\nExplicitly keep this skill local-only (y/N)? ")).trim().toLowerCase();
-        const localOnly = localOnlyAnswer === 'y' || localOnlyAnswer === 'yes' || process.argv.includes('--local-only') || process.argv.includes('-o');
-
-        scaffoldSkill({
-          name,
-          description,
-          tags,
-          targetDir,
-          localOnly,
-          creationMode,
-          archetype,
-          customTriggers,
-          customRequirements,
-          customTasks,
-          customReviews,
-          scriptLanguage
-        });
-        break;
-      }
-      case '2': {
-        const events = (await askQuestion("Enter triggering event (Default: pre-commit): ")).trim() || "pre-commit";
-        const filePatterns = (await askQuestion("Enter target file patterns (Default: *): ")).trim() || "*";
-        const severity = (await askQuestion("Enter failure severity level (block / warn / suggest): ")).trim() || "block";
-        scaffoldHook({ name, events, filePatterns, severity, targetDir });
-        break;
-      }
-      case '3': {
-        const description = (await askQuestion("Enter description: ")).trim() || "Antigravity specialized agent.";
-        const role = (await askQuestion("Enter agent role/persona (e.g. Python security analyst): ")).trim() || "specialized analyst";
-        const allowedSkills = (await askQuestion("Enter comma-separated allowed skills (e.g. python-security): ")).trim() || "none";
-        scaffoldAgent({ name, description, role, allowedSkills, targetDir });
-        break;
-      }
-      case '4': {
-        const orchestrator = (await askQuestion("Enter name of system orchestrator agent (Default: system-coordinator): ")).trim() || "system-coordinator";
-        const subSkillsText = (await askQuestion("Enter comma-separated sub-skills to scaffold (e.g. python-dev, python-review, python-security): ")).trim();
-        if (!subSkillsText) {
-          console.log("🔴 At least one sub-skill is required to scaffold a system.");
-          rl.close();
-          return;
-        }
-        await scaffoldSkillSystem({ name, orchestrator, subSkillsText, targetDir, isInteractive: true });
-        break;
-      }
-      default:
-        console.log("🔴 Invalid choice. Exiting.");
-    }
-  } catch (err) {
-    console.error(`\n🔴 An unexpected error occurred: ${err.message}`);
-  } finally {
-    rl.close();
-  }
-}
-
-// Execute CLI if run directly
-const isDirectRun = process.argv[1] && (
-  process.argv[1] === fileURLToPath(import.meta.url) ||
-  path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))
-);
-if (isDirectRun) {
-  main();
 }
 

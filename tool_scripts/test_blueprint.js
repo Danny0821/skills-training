@@ -88,6 +88,36 @@ function runTests() {
     if (norm.skills[0].language !== "py") throw new Error("Expected language setting preservation");
     console.log("  🟢 Test Case 4 passed successfully!\n");
 
+    // 5. Compact Agent Schema Verification
+    console.log("🧪 Test Case 5: Verifying Compact Agent blueprint validations...");
+    const compactBlueprint = {
+      projectName: "compact-app",
+      skills: [
+        { name: "python-ui", archetype: "developer", description: "UI" },
+        { name: "python-ai", archetype: "developer", description: "AI" }
+      ],
+      agents: [
+        {
+          name: "python-expert",
+          role: "Principal developer",
+          description: "All-in-one",
+          allowedSkills: ["python-ui", "python-ai"]
+        }
+      ]
+    };
+    const compNorm = validateBlueprint(compactBlueprint);
+    if (!compNorm.agents || compNorm.agents.length !== 1) throw new Error("Expected 1 normalized compact agent");
+    if (compNorm.agents[0].name !== "python-expert") throw new Error("Parsed compact agent name mismatch");
+    if (compNorm.agents[0].allowedSkills.length !== 2) throw new Error("Expected 2 whitelisted allowed skills in compact agent");
+
+    assertThrows(() => validateBlueprint({
+      projectName: "compact-app",
+      skills: [{ name: "python-ui", archetype: "developer", description: "UI" }],
+      agents: [{ name: "python-expert", role: "Dev" }] // Missing description and allowedSkills
+    }), "requires 'name', 'role', 'description', and 'allowedSkills'");
+
+    console.log("  🟢 Test Case 5 passed successfully!\n");
+
     console.log("=====================================================");
     console.log("🎉 All Blueprint Validation Unit Tests passed successfully!");
     console.log("=====================================================");

@@ -10,7 +10,7 @@ default_tools:
   - "replace_file_content"
   - "run_command"
 allowed_skills:
-  - "{{ALLOWED_SKILLS}}"
+  {{ALLOWED_SKILLS_YAML}}
 ---
 
 # AGENT.md — {{NAME}}
@@ -25,7 +25,7 @@ allowed_skills:
   </context>
 
   <task_definition>
-  - Run skills: {{ALLOWED_SKILLS}}
+  - Run skills: {{ALLOWED_SKILLS_HUMAN}}
   - Manage plans, tasks, and tools in sandbox.
   </task_definition>
 

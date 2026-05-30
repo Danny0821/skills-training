@@ -262,20 +262,22 @@ async function handleCommands() {
     process.exit(0);
   }
 
-  // 5. Default Fallback: Boot up the interactive menu from scripts/generate.js
-  const generatePath = path.resolve(__dirname, '../tool_scripts/generate.js');
-  const generateUrl = pathToFileURL(generatePath).href;
+  // 5. Default Fallback: Print welcome redirection notice and display help menu
+  console.log(`
+==================================================================
+        Antigravity 2.0 CLI Programmatic Scaffolder Engine
+==================================================================
+👉 NOTE: Conversational-First Onboarding is active!
+   To scaffold a new multi-agent team or custom skill:
+   1. Open your Antigravity chat client.
+   2. Type '/interview' or '/grill-blueprint' in the chat.
+   3. The agent will dynamically interview you and build the workspace.
 
-  import(generateUrl).then((module) => {
-    if (module.main) {
-      module.main();
-    } else {
-      throw new Error("main() entry point function not exported in scripts/generate.js.");
-    }
-  }).catch((err) => {
-    console.error("🔴 Failed to launch Antigravity Generator CLI:", err.message);
-    process.exit(1);
-  });
+For programmatic command-line scaffolding, use:
+  antigravity-gen --blueprint <path-to-blueprint.json>
+`);
+  printHelp();
+  process.exit(0);
 }
 
 handleCommands();

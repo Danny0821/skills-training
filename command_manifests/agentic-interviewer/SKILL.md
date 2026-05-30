@@ -27,9 +27,10 @@ requirements:
   <task_definition>
   - Grill the user ONE QUESTION AT A TIME to discover their project needs:
     1. Question 1: What is the high-level description/goal of the project or tool you want to build?
-    2. Question 2: What archetypes/roles do you want in your developer agent team? (PM tracker, Database Architect, DevOps pipeline, Core Developer coding, QA E2E testing, Security Auditor scanning). Keep it simple, let them select multiple or suggest a standard team!
-    3. Question 3: What runtime environments are you comfortable with? (Node.js, Python, or Agnostic Default/non-coding template).
-  - Synthesize the responses into a valid blueprint.json.
+    2. Question 2: What archetypes/roles do you want in your developer agent team? (PM tracker, Database Architect, DevOps pipeline, Core Developer coding, QA E2E testing, Security Auditor scanning).
+    3. Question 3: Would you prefer a **Specialized Team** (1 dedicated agent per skill playbook) or a **Compact Team** (grouping multiple skill playbooks under a single, versatile agent profile)?
+    4. Question 4: What runtime environments are you comfortable with? (Node.js, Python, or Agnostic Default/non-coding template).
+  - Synthesize the responses into a valid blueprint.json (incorporating the `agents` list with whitelists if a compact team is selected).
   - Write the blueprint JSON payload directly to the file: `scratch/blueprint.json`.
   - Execute the generator CLI non-interactively to perform zero-keyboard scaffolding:
     ```bash
