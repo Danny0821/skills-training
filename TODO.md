@@ -116,12 +116,12 @@ Lower the barrier of entry for beginners and less technical users by replacing r
 
 ---
 
-## ⚡ Release 0.7.0: Compact Multi-Skill Agents & Blueprint Upgrades [PLANNED]
+## ⚡ Release 0.7.0: Compact Multi-Skill Agents & Blueprint Upgrades [COMPLETED]
 
 ### Goal
 Natively support grouping multiple distinct skills under a single, highly capable agent profile instead of defaulting to a verbose 1-to-1 setup, significantly streamlining coordinated workspaces.
 
 ### Tasks
-- `[ ]` **Declarative `agents` Blueprint Schema:** Add a custom `agents` definition block to the blueprint JSON format mapping agent names to multiple `allowedSkills` (e.g. `["python-ui", "python-ai"]`).
-- `[ ]` **Multi-Skill Agent Scaffolder:** Upgrade `scaffoldFromBlueprint` to parse this block and write corresponding whitelisted `AGENT.md` profiles and the orchestrating `SYSTEM.md` file.
-- `[ ]` **Interactive Compact Team Question:** Update `/interview` and `/grill-blueprint` playbooks to offer a choice between a Specialized Team (1-to-1) and a Compact Team (multi-skilled profiles).
+- `[x]` **Declarative `agents` Blueprint Schema:** Add a custom `agents` definition block to the blueprint JSON format mapping agent names to multiple `allowedSkills` (e.g. `["python-ui", "python-ai"]`).
+- `[x]` **Multi-Skill Agent Scaffolder:** Upgrade `scaffoldFromBlueprint` to parse this block and write corresponding whitelisted `AGENT.md` profiles and the orchestrating `SYSTEM.md` file.
+- `[x]` **Dynamic Density & Cohesive Grouping Rules:** Upgraded both `/interview` and `/grill-blueprint` playbooks to completely automate agent-skill layouts using Language Cohesion, Functional Boundaries, and a Strict Grouping Firewall, eliminating the specialized-vs-compact team questions.
