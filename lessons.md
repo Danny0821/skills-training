@@ -22,4 +22,6 @@
 - CLI Programmatic Simplification: Purging human-facing terminal wizards in favor of a silent, programmatic API (`--blueprint`) reduces codebase complexity (shredding `generate.js` code size by >40%) and delegates user UX entirely to high-reasoning conversational playbooks.
 - YAML Frontmatter Double-Hydration: To prevent formatting conflicts between strict YAML list structures and markdown prose, use separate placeholders (`{{ALLOWED_SKILLS_YAML}}` and `{{ALLOWED_SKILLS_HUMAN}}`) inside the templates and map them individually during hydration.
 - Model-Agnostic UPA Purification: Remove all hardcoded model attributes (like `recommended_model` or `- Model: ...` prompt contexts) from metadata and instruction templates to ensure playbooks are fully future-proof and model-agnostic.
+- PowerShell Statement Separators: Windows PowerShell throws syntax parsing errors on double ampersands (`&&`). Command-line sequences targeting Windows hosts must strictly join statements using semicolons (`;`) or run as separate command executions.
+
 
