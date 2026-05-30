@@ -19,4 +19,7 @@
 - Loop Limit Safeguard: Restrict wait loops and status checks inside playbooks to a maximum of 10 retries to prevent infinite agent execution loops and token depletion.
 - Zero-Slop Consent: Generated prompts must strictly require agents to stop and clarify specifications in ambiguous areas instead of generating fake placeholder content.
 - Crawler Registry Exclusions: Exclude temporary, coverage, and build directories (`build`, `dist`, `skillsets`, `coverage`, `tool_tests`) from crawler indexes to prevent global catalog pollution.
+- CLI Programmatic Simplification: Purging human-facing terminal wizards in favor of a silent, programmatic API (`--blueprint`) reduces codebase complexity (shredding `generate.js` code size by >40%) and delegates user UX entirely to high-reasoning conversational playbooks.
+- YAML Frontmatter Double-Hydration: To prevent formatting conflicts between strict YAML list structures and markdown prose, use separate placeholders (`{{ALLOWED_SKILLS_YAML}}` and `{{ALLOWED_SKILLS_HUMAN}}`) inside the templates and map them individually during hydration.
+- Model-Agnostic UPA Purification: Remove all hardcoded model attributes (like `recommended_model` or `- Model: ...` prompt contexts) from metadata and instruction templates to ensure playbooks are fully future-proof and model-agnostic.
 
