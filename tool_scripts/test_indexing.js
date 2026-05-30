@@ -26,7 +26,7 @@ const __dirname = path.dirname(__filename);
 
 // Setup isolated testing directory
 const TEST_DIR = path.resolve(__dirname, '../output_test/autolearner-test-workspace/registry-test-env');
-process.env.AGY_GEN_TEST_DIR = TEST_DIR;
+process.env.SENFIDE_TEST_DIR = TEST_DIR;
 
 function cleanTestEnv() {
   if (fs.existsSync(TEST_DIR)) {
@@ -42,7 +42,7 @@ function assert(condition, message) {
 
 function runTests() {
   console.log("=====================================================");
-  console.log("     Running Antigravity Registry Database Tests      ");
+  console.log("     Running Senfide Registry Database Tests         ");
   console.log("=====================================================\n");
 
   try {
@@ -53,7 +53,7 @@ function runTests() {
     const regDir = getRegistryDir();
     assert(regDir === TEST_DIR, `Registry directory mismatch. Expected ${TEST_DIR}, got ${regDir}`);
     const regPath = getRegistryPath();
-    assert(regPath === path.join(TEST_DIR, 'skills_index.json'), `Registry file path mismatch.`);
+    assert(regPath === path.join(TEST_DIR, 'senfide_index.json'), `Registry file path mismatch.`);
     console.log("  ✓ Directory override working perfectly.");
 
     // 2. Load missing index

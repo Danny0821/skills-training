@@ -1,13 +1,13 @@
-# Antigravity 2.0 Skill Generator (`agy-gen`)
+# Senfide Engine (`sfe`)
 
-> Premium, zero-dependency security-first scaffolder for Antigravity 2.0. Converts natural language developer intents into production-ready, isolated Skills, Agent Hooks, standalone Agent Profiles, and Coordinated Skill Systems.
+> Premium, zero-dependency security-first scaffolder for the Senfide Engine. Converts natural language developer intents into production-ready, isolated Skills, Agent Hooks, standalone Agent Profiles, and Coordinated Skill Systems.
 
 > [!WARNING]
 > **Active Development (Alpha Status)**: This repository represents an early version under active, rapid development. Architectural specifications, templates, CLI flags, and coordinate playbooks are subject to major breaking changes in future releases.
 
-## 💡 What is `agy-gen`?
+## 💡 What is the `Senfide Engine`?
 
-**Antigravity Generator (`agy-gen`)** is a professional-grade, zero-dependency, security-first command-line engine designed to automate the scaffolding and lifecycle management of isolated **AI Agent Skills, Hook Rules, Standalone Agent Profiles, and Coordinated Agent Systems** in localized developer workspaces.
+**Senfide Engine (`sfe`)** is a professional-grade, zero-dependency, security-first command-line engine designed to automate the scaffolding and lifecycle management of isolated **AI Agent Skills, Hook Rules, Standalone Agent Profiles, and Coordinated Agent Systems** in localized developer workspaces.
 
 Rather than writing unstructured playbooks that lead to "AI slop" or context contamination, `agy-gen` programmatically structures your agent environments with strict execution boundaries, stack-specific telemetry indices, and automated guardrails.
 
@@ -24,10 +24,10 @@ Install the generator globally directly from GitHub to configure both the system
 npm install -g github:Danny0821/skills-training#master
 ```
 > [!NOTE]
-> This command automatically triggers a `postinstall` synchronization, linking `/generate`, `/interview`, and `/grill-blueprint` native slash commands directly into your AI Agent chat environment configuration directories, delivering a zero-keyboard setup experience.
+> This command automatically triggers a `postinstall` synchronization, linking `/sfe-gen`, `/sfe-interview`, and `/sfe-blueprint` native slash commands directly into your AI Agent chat environment configuration directories, delivering a zero-keyboard setup experience.
 
 ### Option B: Local Setup & Development
-If you plan to customize templates or contribute to `agy-gen`, clone the repository and run interactive setups locally:
+If you plan to customize templates or contribute to the `Senfide Engine`, clone the repository and run interactive setups locally:
 ```bash
 # 1. Clone the repository
 git clone https://github.com/Danny0821/skills-training.git
@@ -40,10 +40,10 @@ npm install
 npm run generate
 
 # 4. (Optional) Sync slash commands globally from your local clone
-npm run install-antigravity-gen
+npm run install-sfe
 
 # 5. (Optional) Purge global commands cleanly
-npm run uninstall-antigravity-gen
+npm run uninstall-sfe
 
 # 6. Run the unit and E2E verification tests
 npm run test
@@ -53,23 +53,23 @@ npm run test
 
 ## 🤖 2. How to Use in Agentic Mode
 
-`antigravity-gen` is natively designed to be utilized and triggered by **AI Coding Agents** (such as Gemini, Antigravity, or other advanced coding assistants) operating in your local development workspace.
+`sfe` is natively designed to be utilized and triggered by **AI Coding Agents** (such as Gemini, or other advanced coding assistants) operating in your local development workspace.
 
 ### 1. Intercepting a Shared Skill Workspace
-When a user pastes a GitHub repository link or points an AI Agent to a folder containing a skill scaffolded by `antigravity-gen`, the primary `SKILL.md` file contains UPA-aligned onboarding manifests.
+When a user pastes a GitHub repository link or points an AI Agent to a folder containing a skill scaffolded by the `Senfide Engine`, the primary `SKILL.md` file contains UPA-aligned onboarding manifests.
 * The Agent automatically recognizes the generator directory layout.
 * It will immediately initiate a jargon-free, friendly onboarding sequence to guide you through workspace commands.
 
 ### 2. Prompting the Agent to Scaffold new Skills
 You can directly command your active coding agent to create custom skill profiles, pre-commit hook rules, or DevTeam systems for you.
-* **Via Slash Command:** Simply type `/generate` in your chat interface. The active agent will capture the slash command manifest, execute the underlying generator globally, and guide you through the creation steps programmatically.
-* **Via Conversational Onboarding:** Type `/interview` or `/grill-blueprint` in your chat interface. The dedicated `agentic-interviewer` or `grill-blueprint` skill will boot up, lead you through a friendly, jargon-free conversational interview about your project requirements, synthesize a team blueprint JSON, and scaffold it automatically inside your local `./skillsets/` workspace.
-* **Via Prompting:** Send a clear text directive to your agent to invoke `antigravity-gen` under the hood:
+* **Via Slash Command:** Simply type `/sfe-gen` in your chat interface. The active agent will capture the slash command manifest, execute the underlying generator globally, and guide you through the creation steps programmatically.
+* **Via Conversational Onboarding:** Type `/sfe-interview` or `/sfe-blueprint` in your chat interface. The dedicated `agentic-interviewer` or `grill-blueprint` skill will boot up, lead you through a friendly, jargon-free conversational interview about your project requirements, synthesize a team blueprint JSON, and scaffold it automatically inside your local `./skillsets/` workspace.
+* **Via Prompting:** Send a clear text directive to your agent to invoke `sfe` under the hood:
   > **Prompt Directive Example:**
-  > *"Create a new local-only Security Auditor skill named 'secret-scanner' using antigravity-gen. Setup advanced Python scanning requirements."*
+  > *"Create a new local-only Security Auditor skill named 'secret-scanner' using sfe. Setup advanced Python scanning requirements."*
 
 ### 3. The Self-Improving Telemetry Loop (Autolearner Protocol)
-When an agent is performing software creation or infrastructure tasks under an `antigravity-gen` skill, it is bound to a closed-loop learning protocol:
+When an agent is performing software creation or infrastructure tasks under a `Senfide Engine` skill, it is bound to a closed-loop learning protocol:
 1. **Regression Prevention:** Before beginning any code write or build action, the agent's XML instructions mandate that it reads `lessons_index.md` (Telemetry Index) and `playbook.md` (Telemetry Playbook) inside the skill folder to check for historical bugs or OS workarounds.
 2. **Failure Logging:** If a sandbox run, build test, or security pre-commit validation fails, the agent writes the detailed failure context and fix criteria directly into the playbook, making it dynamically smarter for all future tasks.
 
@@ -77,33 +77,33 @@ When an agent is performing software creation or infrastructure tasks under an `
 
 ## ⚙️ 3. CLI Command & Parameters Reference
 
-`antigravity-gen` operates as an interactive guided wizard or via direct query command-line parameters:
+`sfe` operates as an interactive guided wizard or via direct query command-line parameters:
 
 ```bash
 # 1. List all globally cataloged skills across projects
-antigravity-gen --list
+sfe --list
 
 # 2. Fuzzy search registry index by keyword or tag
-antigravity-gen --search <term>
+sfe --search <term>
 
 # 3. Recursively crawl a folder to discover and index existing skills
-antigravity-gen --scan <directory-path>
+sfe --scan <directory-path>
 
 # 4. Scaffolding with global-index bypass (bypasses registerSkill indexer)
-antigravity-gen --local-only
+sfe --local-only
 
 # 5. Unregister skill from global registry database
-antigravity-gen --remove <skill-name>
+sfe --remove <skill-name>
 
 # 6. Unregister skill AND physically purge its folders from disk
 # (purges are restricted strictly to files inside global ~/.gemini/config/ skills path)
-antigravity-gen --remove <skill-name> --purge
+sfe --remove <skill-name> --purge
 
 # 7. Declaratively scaffold a complete coordinated multi-skill team from a JSON blueprint file
-antigravity-gen --blueprint <blueprint-json-path>
+sfe --blueprint <blueprint-json-path>
 
 # 8. Force override/overwrite existing directories during blueprint scaffolding
-antigravity-gen --blueprint <blueprint-json-path> --force
+sfe --blueprint <blueprint-json-path> --force
 ```
 
 ---

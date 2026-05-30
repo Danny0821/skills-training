@@ -1,5 +1,5 @@
 /**
- * Antigravity 2.0 Skill, Agent, Hook, and Skill System Scaffolder
+ * Senfide Engine Skill, Agent, Hook, and Skill System Scaffolder
  * 
  * A premium, zero-dependency Node.js CLI to generate custom workspaces,
  * files, and self-improving autolearner loops under Windows/Linux.
@@ -518,7 +518,7 @@ jobs:
   if (!isSubSkill) {
     console.log("\n==================================================================");
     console.log("👉 QUICK-START GUIDE FOR PAIR PROGRAMMING:");
-    console.log("   1. Point your Antigravity chat client to this folder or import it.");
+    console.log("   1. Point your Gemini chat client to this folder or import it.");
     console.log(`   2. Trigger this skill by typing its active context keywords:`);
     console.log(`      - "${tags}"`);
     console.log("==================================================================\n");
@@ -692,7 +692,7 @@ export async function scaffoldSkillSystem(options) {
   console.log(`\n🟢 Skill System [${name}] fully scaffolded with ${subSkills.length} sub-agents/skills!`);
   console.log("\n==================================================================");
   console.log("👉 QUICK-START GUIDE FOR PAIR PROGRAMMING:");
-  console.log("   1. Open the newly generated project folder in your Antigravity chat client.");
+  console.log("   1. Open the newly generated project folder in your Gemini chat client.");
   console.log("   2. In the chat, type: 'Let's begin the PM backlog coordination phase.'");
   console.log("   3. Your Product Manager archetype will actively interview you to align on details");
   console.log("      and design system preferences. Follow their guidance to unblock developers!");
@@ -919,7 +919,7 @@ export async function scaffoldFromBlueprint(blueprintPath, force = false) {
   console.log("🎉 Coordinated Multi-Skill Team Scaffolding Completed!");
   console.log("=====================================================");
   console.log("\n👉 QUICK-START GUIDE FOR PAIR PROGRAMMING:");
-  console.log("   1. Open the newly generated project folder in your Antigravity chat client.");
+  console.log("   1. Open the newly generated project folder in your Gemini chat client.");
   console.log("   2. In the chat, type: 'Let's begin the PM backlog coordination phase.'");
   console.log("   3. Your Product Manager archetype will actively interview you to align on details");
   console.log("      and design system preferences. Follow their guidance to unblock developers!");

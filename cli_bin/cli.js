@@ -23,13 +23,13 @@ const __dirname = path.dirname(__filename);
 function printHelp() {
   console.log(`
 ==================================================================
-             Antigravity 2.0 CLI Tool & Skill Indexer
+             Senfide Engine CLI Tool & Skill Indexer
 ==================================================================
-Usage: agy-gen [options]
+Usage: sfe [options]
 
 Options:
-  -i, --install          Synchronize slash command manifests globally to all Antigravity instances
-  -l, --list             List all globally registered skills in agy-gen index
+  -i, --install          Synchronize slash command manifests globally to all Gemini instances
+  -l, --list             List all globally registered skills in Senfide index
   -s, --search <term>    Fuzzy search for registered skills by name or tag
   -c, --scan <path>      Scan a directory recursively to discover and register skills
   -r, --remove <name>    Unregister a skill from global index. Add --purge to delete files.
@@ -37,7 +37,7 @@ Options:
   -f, --force            Overwrite existing directories during blueprint scaffolding
   -h, --help             Display this help menu
 
-If no options are specified, the interactive component generator will run.
+If no options are specified, the welcome instructions will run.
 `);
 }
 
@@ -243,7 +243,7 @@ async function handleCommands() {
   if (options.remove !== null) {
     const name = options.remove;
     if (!name) {
-      console.error("🔴 Error: Please specify a skill name to remove (e.g. agy-gen --remove go-senior-dev).");
+      console.error("🔴 Error: Please specify a skill name to remove (e.g. sfe --remove go-senior-dev).");
       process.exit(1);
     }
     const purge = options.purge;
@@ -251,7 +251,7 @@ async function handleCommands() {
     try {
       console.log(`\n🗑️ Unregistering skill "${name}"...`);
       const skill = unregisterSkill(name, purge);
-      console.log(`🟢 Successfully unregistered skill "${name}" from agy-gen index.`);
+      console.log(`🟢 Successfully unregistered skill "${name}" from Senfide index.`);
       if (purge) {
         console.log(`🧹 Purged skill files from folder: ${skill.path}`);
       }
@@ -265,16 +265,16 @@ async function handleCommands() {
   // 5. Default Fallback: Print welcome redirection notice and display help menu
   console.log(`
 ==================================================================
-        Antigravity 2.0 CLI Programmatic Scaffolder Engine
+        Senfide Engine CLI Programmatic Scaffolder
 ==================================================================
 👉 NOTE: Conversational-First Onboarding is active!
    To scaffold a new multi-agent team or custom skill:
-   1. Open your Antigravity chat client.
-   2. Type '/interview' or '/grill-blueprint' in the chat.
+   1. Open your Gemini chat client.
+   2. Type '/sfe-interview' or '/sfe-blueprint' in the chat.
    3. The agent will dynamically interview you and build the workspace.
 
 For programmatic command-line scaffolding, use:
-  antigravity-gen --blueprint <path-to-blueprint.json>
+  sfe --blueprint <path-to-blueprint.json>
 `);
   printHelp();
   process.exit(0);

@@ -1,8 +1,8 @@
 /**
  * index_manager.js
  * 
- * Central registry database coordinator for Antigravity skills.
- * Manages ~/.gemini/config/agy-gen/skills_index.json.
+ * Central registry database coordinator for Senfide skills.
+ * Manages ~/.gemini/config/senfide-engine/senfide_index.json.
  */
 
 import fs from 'fs';
@@ -14,10 +14,10 @@ import os from 'os';
  * @returns {string} Absolute path to config directory.
  */
 export function getRegistryDir() {
-  if (process.env.AGY_GEN_TEST_DIR) {
-    return path.resolve(process.env.AGY_GEN_TEST_DIR);
+  if (process.env.SENFIDE_TEST_DIR) {
+    return path.resolve(process.env.SENFIDE_TEST_DIR);
   }
-  return path.join(os.homedir(), '.gemini', 'config', 'agy-gen');
+  return path.join(os.homedir(), '.gemini', 'config', 'senfide-engine');
 }
 
 /**
@@ -25,7 +25,7 @@ export function getRegistryDir() {
  * @returns {string} Absolute path to registry index file.
  */
 export function getRegistryPath() {
-  return path.join(getRegistryDir(), 'skills_index.json');
+  return path.join(getRegistryDir(), 'senfide_index.json');
 }
 
 /**

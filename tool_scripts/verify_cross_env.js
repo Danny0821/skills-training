@@ -49,8 +49,8 @@ try {
 
     // Assert Windows Local launcher files exist
     const winBinDir = path.resolve(os.homedir(), '.gemini/config/bin');
-    const cmdLauncher = path.join(winBinDir, 'antigravity-gen.cmd');
-    const ps1Launcher = path.join(winBinDir, 'antigravity-gen.ps1');
+    const cmdLauncher = path.join(winBinDir, 'sfe.cmd');
+    const ps1Launcher = path.join(winBinDir, 'sfe.ps1');
 
     if (!fs.existsSync(cmdLauncher) || !fs.existsSync(ps1Launcher)) {
       throw new Error("🔴 Failed: Windows cmd/ps1 launcher files are missing!");

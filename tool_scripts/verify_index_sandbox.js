@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename);
 // Target test registry and source sandbox folders
 const RUN_ID = Date.now() + Math.random().toString(36).substring(2, 7);
 const SANDBOX_REGISTRY_DIR = path.resolve(__dirname, `../output_test/autolearner-test-workspace/sandbox-registry-${RUN_ID}`);
-process.env.AGY_GEN_TEST_DIR = SANDBOX_REGISTRY_DIR;
+process.env.SENFIDE_TEST_DIR = SANDBOX_REGISTRY_DIR;
 const SOURCE_SANDBOX_DIR = path.resolve(__dirname, `../output_test/autolearner-test-workspace/sandbox-project-${RUN_ID}`);
 const CLI_PATH = path.resolve(__dirname, '../cli_bin/cli.js');
 
@@ -40,7 +40,7 @@ function runCommandWithEnv(args) {
   return execSync(`node "${CLI_PATH}" ${args}`, {
     env: {
       ...process.env,
-      AGY_GEN_TEST_DIR: SANDBOX_REGISTRY_DIR
+      SENFIDE_TEST_DIR: SANDBOX_REGISTRY_DIR
     },
     encoding: 'utf8'
   });

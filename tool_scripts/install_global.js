@@ -60,7 +60,7 @@ function copyFolderRecursiveSync(source, target) {
  */
 function installGlobally() {
   console.log("=========================================================");
-  console.log("   Installing Antigravity Scaffolder System-Wide CLI   ");
+  console.log("     Installing Senfide Engine System-Wide CLI           ");
   console.log("=========================================================\n");
 
   try {
@@ -89,7 +89,7 @@ function installGlobally() {
           fs.unlinkSync(legacyFlatFile);
         }
 
-        // Copy /generate manifest into generate/SKILL.md folder
+        // Copy /sfe-gen manifest into generate/SKILL.md folder
         const targetCommandDir = path.join(dir, 'generate');
         if (!fs.existsSync(targetCommandDir)) {
           fs.mkdirSync(targetCommandDir, { recursive: true });
@@ -97,14 +97,14 @@ function installGlobally() {
         const targetCommandPath = path.join(targetCommandDir, 'SKILL.md');
         fs.copyFileSync(LOCAL_COMMAND_PATH, targetCommandPath);
         
-        // Copy /agy-interview manifest folder
+        // Copy /sfe-interview manifest folder
         const targetInterviewPath = path.join(dir, 'agentic-interviewer');
         if (fs.existsSync(targetInterviewPath)) {
           fs.rmSync(targetInterviewPath, { recursive: true, force: true });
         }
         copyFolderRecursiveSync(LOCAL_INTERVIEW_PATH, targetInterviewPath);
 
-        // Copy /grill-blueprint manifest folder
+        // Copy /sfe-blueprint manifest folder
         const targetBlueprintPath = path.join(dir, 'grill-blueprint');
         if (fs.existsSync(targetBlueprintPath)) {
           fs.rmSync(targetBlueprintPath, { recursive: true, force: true });
@@ -124,12 +124,18 @@ function installGlobally() {
         fs.mkdirSync(GLOBAL_BIN_DIR, { recursive: true });
       }
 
+      // Clean up legacy antigravity-gen launchers to avoid clutter
+      const oldCmd = path.join(GLOBAL_BIN_DIR, 'antigravity-gen.cmd');
+      if (fs.existsSync(oldCmd)) fs.unlinkSync(oldCmd);
+      const oldPs1 = path.join(GLOBAL_BIN_DIR, 'antigravity-gen.ps1');
+      if (fs.existsSync(oldPs1)) fs.unlinkSync(oldPs1);
+
       const cliPath = path.join(PACKAGE_ROOT, 'cli_bin/cli.js');
       const cmdLauncherContent = `@echo off\nnode "${cliPath}" %*`;
       const ps1LauncherContent = `node "${cliPath}" $args`;
 
-      fs.writeFileSync(path.join(GLOBAL_BIN_DIR, 'antigravity-gen.cmd'), cmdLauncherContent, 'utf8');
-      fs.writeFileSync(path.join(GLOBAL_BIN_DIR, 'antigravity-gen.ps1'), ps1LauncherContent, 'utf8');
+      fs.writeFileSync(path.join(GLOBAL_BIN_DIR, 'sfe.cmd'), cmdLauncherContent, 'utf8');
+      fs.writeFileSync(path.join(GLOBAL_BIN_DIR, 'sfe.ps1'), ps1LauncherContent, 'utf8');
       console.log(`  🟢 Windows CLI Launchers compiled inside: ${GLOBAL_BIN_DIR}`);
 
       // Run native Windows PATH registration
@@ -142,7 +148,7 @@ function installGlobally() {
 
     console.log(`\n🟢 Success! System-wide registration complete.`);
     console.log("\n✨ The native slash commands are now active globally!");
-    console.log("👉 You can now type `/generate`, `/agy-interview`, or `/grill-blueprint` inside your Windows agy client.");
+    console.log("👉 You can now type `/sfe-gen`, `/sfe-interview`, or `/sfe-blueprint` inside your Windows agy client.");
     console.log("=========================================================");
   } catch (err) {
     console.error(`\n🔴 Installation failed: ${err.message}`);

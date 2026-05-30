@@ -1,5 +1,5 @@
 /**
- * Antigravity 2.0 Global Command Uninstaller
+ * Senfide Engine Global Command Uninstaller
  * 
  * Safely removes all globally synchronized slash command definitions
  * and compiled Windows CLI launchers from the host system.
@@ -26,7 +26,7 @@ const GLOBAL_BIN_DIR = path.resolve(os.homedir(), '.gemini/config/bin');
 
 function uninstallGlobally() {
   console.log("=========================================================");
-  console.log("   Uninstalling Antigravity Scaffolder System-Wide CLI   ");
+  console.log("     Uninstalling Senfide Engine System-Wide CLI         ");
   console.log("=========================================================\n");
 
   try {
@@ -39,21 +39,21 @@ function uninstallGlobally() {
           const commandDir = path.join(dir, 'generate');
           if (fs.existsSync(commandDir)) {
             fs.rmSync(commandDir, { recursive: true, force: true });
-            console.log(`  ✓ Removed generate from: ${dir}`);
+            console.log(`  ✓ Removed sfe-gen from: ${dir}`);
           }
           
           // Remove /agentic-interviewer folder
           const interviewDir = path.join(dir, 'agentic-interviewer');
           if (fs.existsSync(interviewDir)) {
             fs.rmSync(interviewDir, { recursive: true, force: true });
-            console.log(`  ✓ Removed agentic-interviewer from: ${dir}`);
+            console.log(`  ✓ Removed sfe-interview from: ${dir}`);
           }
 
           // Remove /grill-blueprint folder
           const blueprintDir = path.join(dir, 'grill-blueprint');
           if (fs.existsSync(blueprintDir)) {
             fs.rmSync(blueprintDir, { recursive: true, force: true });
-            console.log(`  ✓ Removed grill-blueprint from: ${dir}`);
+            console.log(`  ✓ Removed sfe-blueprint from: ${dir}`);
           }
         }
       } catch (dirErr) {
@@ -65,16 +65,28 @@ function uninstallGlobally() {
     if (fs.existsSync(GLOBAL_BIN_DIR)) {
       console.log("\n🚀 Purging compiled Windows CLI launcher executables...");
       
-      const cmdLauncher = path.join(GLOBAL_BIN_DIR, 'antigravity-gen.cmd');
-      if (fs.existsSync(cmdLauncher)) {
-        fs.unlinkSync(cmdLauncher);
-        console.log("  ✓ Removed antigravity-gen.cmd launcher.");
+      // Clean sfe launchers
+      const sfeCmd = path.join(GLOBAL_BIN_DIR, 'sfe.cmd');
+      if (fs.existsSync(sfeCmd)) {
+        fs.unlinkSync(sfeCmd);
+        console.log("  ✓ Removed sfe.cmd launcher.");
+      }
+      const sfePs1 = path.join(GLOBAL_BIN_DIR, 'sfe.ps1');
+      if (fs.existsSync(sfePs1)) {
+        fs.unlinkSync(sfePs1);
+        console.log("  ✓ Removed sfe.ps1 launcher.");
       }
 
-      const ps1Launcher = path.join(GLOBAL_BIN_DIR, 'antigravity-gen.ps1');
-      if (fs.existsSync(ps1Launcher)) {
-        fs.unlinkSync(ps1Launcher);
-        console.log("  ✓ Removed antigravity-gen.ps1 launcher.");
+      // Clean legacy launchers
+      const oldCmd = path.join(GLOBAL_BIN_DIR, 'antigravity-gen.cmd');
+      if (fs.existsSync(oldCmd)) {
+        fs.unlinkSync(oldCmd);
+        console.log("  ✓ Removed legacy antigravity-gen.cmd launcher.");
+      }
+      const oldPs1 = path.join(GLOBAL_BIN_DIR, 'antigravity-gen.ps1');
+      if (fs.existsSync(oldPs1)) {
+        fs.unlinkSync(oldPs1);
+        console.log("  ✓ Removed legacy antigravity-gen.ps1 launcher.");
       }
     }
 

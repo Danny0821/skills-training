@@ -1,13 +1,13 @@
-# Agy-gen-documentation.md — Antigravity Generator Guide (Caveman Style)
+# Senfide-documentation.md — Senfide Engine Guide (Caveman Style)
 
 > [!NOTE]
-> Dense, high-density documentation for agy-gen toolset. Future-proof. Covers architectures, commands, prompting, and tests.
+> Dense, high-density documentation for Senfide Engine toolset. Future-proof. Covers architectures, commands, prompting, and tests.
 
 ---
 
 ## 🛠️ 1. System Architecture
 
-agy-gen is a premium, zero-dependency skill-engine, hook-rule, and multi-agent system generator.
+sfe is a premium, zero-dependency skill-engine, hook-rule, and multi-agent system generator.
 
 ### Workspace Footprint Map
 ```mermaid
@@ -21,14 +21,14 @@ graph TD
     LocalSkill --> LocalRefs[references/conventions.md]
     LocalSkill --> LocalScripts[scripts/security_check.js]
 
-    GlobalConfig[~/.gemini/config/agy-gen/] --> GlobalIndex[skills_index.json - Catalog database]
+    GlobalConfig[~/.gemini/config/senfide-engine/] --> GlobalIndex[senfide_index.json - Catalog database]
     GlobalConfig --> GlobalSkills[skills/ - Global slash command manifests]
 ```
 
 ### Config Directories (Isolated):
-* **Root folder**: `~/.gemini/config/agy-gen/` (mapped platform-agnostically via `os.homedir()`).
-* **Registry Database file**: `~/.gemini/config/agy-gen/skills_index.json`
-* **Global command manifests**: `~/.gemini/config/agy-gen/skills/`
+* **Root folder**: `~/.gemini/config/senfide-engine/` (mapped platform-agnostically via `os.homedir()`).
+* **Registry Database file**: `~/.gemini/config/senfide-engine/senfide_index.json`
+* **Global command manifests**: `~/.gemini/config/senfide-engine/skills/`
 
 ---
 
@@ -60,39 +60,33 @@ Every generated `SKILL.md` template is structured according to the **Unified Pro
 
 ## 🚀 3. CLI Command & Parameters Reference
 
-agy-gen operates either as a guided interactive terminal or via specialized query flags.
-
-### Interactive Guided Generator:
-```bash
-# Launch guide (Skill / Hook / Agent / System coordinates)
-npm run generate
-```
+sfe operates either as via specialized query flags.
 
 ### Administrative & Query Parameters:
 ```bash
 # 1. List all globally cataloged skills across projects
-agy-gen --list
+sfe --list
 
 # 2. Fuzzy search registry index by keyword or tag
-agy-gen --search <term>
+sfe --search <term>
 
 # 3. Recursively crawl a folder to discover and index existing skills
-agy-gen --scan <directory-path>
+sfe --scan <directory-path>
 
 # 4. Scaffolding with global-index bypass (Bypasses registerSkill hook)
-agy-gen --local-only
+sfe --local-only
 
 # 5. Unregister skill from registry index
-agy-gen --remove <skill-name>
+sfe --remove <skill-name>
 
 # 6. Unregister skill AND physically purge its folders from disk
-# (purges are restricted strictly to files inside the global ~/.gemini/config/agy-gen/ path)
-agy-gen --remove <skill-name> --purge
+# (purges are restricted strictly to files inside the global ~/.gemini/config/senfide-engine/ path)
+sfe --remove <skill-name> --purge
 
-# 7. Natively install and register slash commands globally to all Antigravity instances
-agy-gen --install
+# 7. Natively install and register slash commands globally to all Gemini instances
+sfe --install
 # Or
-agy-gen -i
+sfe -i
 ```
 
 ---
@@ -137,7 +131,7 @@ npm run test
 ## 🛡️ 6. Core Safety Guardrails
 
 1. **Credentials Firewall**: Plain-text keys/secrets are strictly scanned and banned. All templates use env variables.
-2. **Directory Purge Shield**: The `--purge` command deletes physical directories *only* if they reside inside the global `~/.gemini/config/agy-gen/` workspace. Local developer project workspaces are structurally protected from accidental deletions.
+2. **Directory Purge Shield**: The `--purge` command deletes physical directories *only* if they reside inside the global `~/.gemini/config/senfide-engine/` workspace. Local developer project workspaces are structurally protected from accidental deletions.
 3. **Robust CLI Atomic Writes**: All registry updates are written to temporary files first (`.tmp`) and then renamed, eliminating the risk of registry file corruption.
 
 ---
@@ -252,9 +246,9 @@ Automatically generated in newly scaffolded skill directories, customized to the
 Introduces conversational scaffolding utilizing the Agentic Interview Protocol (`/interview` and `/grill-blueprint`) and non-interactive JSON blueprint declarations (`--blueprint`).
 
 ### 1. Conversational Agentic Playbooks
-The interview logic is split into two separate directories under `command_manifests/` to comply with the Antigravity 2.0 parser, which registers only the first trigger specified in a skill folder's `SKILL.md` frontmatter:
-* **`/interview`**: Located at `command_manifests/agentic-interviewer/` (trigger `/interview`). It conducts an XML-guided UPA interview, asking jargon-free business questions (scoping project goals, roles, and environments) and automatically maps replies to DevTeam archetypes.
-* **`/grill-blueprint`**: Located at `command_manifests/grill-blueprint/` (trigger `/grill-blueprint`). It serves as a direct alternative shortcut to initiate the same interactive blueprint design and scaffolding workflow.
+The interview logic is split into two separate directories under `command_manifests/` to comply with the Gemini parser, which registers only the first trigger specified in a skill folder's `SKILL.md` frontmatter:
+* **`/sfe-interview`**: Located at `command_manifests/agentic-interviewer/` (trigger `/sfe-interview`). It conducts an XML-guided UPA interview, asking jargon-free business questions (scoping project goals, roles, and environments) and automatically maps replies to DevTeam archetypes.
+* **`/sfe-blueprint`**: Located at `command_manifests/grill-blueprint/` (trigger `/sfe-blueprint`). It serves as a direct alternative shortcut to initiate the same interactive blueprint design and scaffolding workflow.
 * **Synthesis**: Synthesizes the coordinated multi-agent team blueprint JSON and writes it to `scratch/blueprint.json`.
 
 ### 2. Multi-Skill JSON Blueprint Schema
@@ -267,10 +261,10 @@ The declarative blueprint represents complete, integrated teams. Standard schema
 Extended command-line capabilities to parse JSON configurations natively:
 ```bash
 # Scaffold the entire coordinated multi-agent team zero-interactively
-agy-gen --blueprint scratch/blueprint.json
+sfe --blueprint scratch/blueprint.json
 
 # Override directory collision safeguards
-agy-gen --blueprint scratch/blueprint.json --force
+sfe --blueprint scratch/blueprint.json --force
 ```
 
 ### 4. Overwrite Safeguard Protocol

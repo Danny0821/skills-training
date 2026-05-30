@@ -1,14 +1,20 @@
 ---
 name: "generate"
-description: "Turn ideas into high-quality, security-hardened skills, hooks, agents, or coordinated multi-agent skill systems. Trigger: /generate [your idea]"
+description: "Turn ideas into high-quality, security-hardened skills, hooks, agents, or coordinated multi-agent skill systems. Trigger: /sfe-gen [your idea]"
 version: "0.1.0"
 triggers:
-  - "/generate"
+  - "/sfe-gen"
 requirements:
   - "node: >=18"
 ---
 
-# /generate — Antigravity 2.0 Scaffolder Command
+# /sfe-gen — Senfide Engine Scaffolder Command
+
+<instructions>
+  <role>
+  - You are the Senfide Scaffolder command handler.
+  </role>
+</instructions>
 
 > [!NOTE]
 > Telegraphic command playbook for turning ideas into sandboxed Skills, Hooks, Agents, or coordinated systems.
@@ -34,13 +40,11 @@ requirements:
 
 ### 2. Scaffold using CLI
 - Direct user to execute zero-dep interactive CLI:
-  ```bash
-  npm run generate
-  ```
-- Or run it directly for user:
-  ```bash
-  node scripts/generate.js
-  ```
+  - Triggering `/sfe-interview` or `/sfe-blueprint` for full automated scaffolding.
+  - Or manually using the global binary runner:
+    ```bash
+    sfe --blueprint scratch/blueprint.json
+    ```
 
 ### 3. Autolearner Protocol Integration
 - Every scaffolded system/skill MUST contain:

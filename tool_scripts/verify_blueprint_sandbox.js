@@ -1,5 +1,5 @@
 /**
- * E2E Sandbox Integration Verification Suite for Agy-Gen Blueprint Scaffolding
+ * E2E Sandbox Integration Verification Suite for Senfide Blueprint Scaffolding
  */
 
 import fs from 'fs';
@@ -15,7 +15,7 @@ const SCRATCH_DIR = path.resolve(__dirname, '../scratch');
 const REGISTRY_DIR = path.join(TEST_OUTPUT_DIR, 'test-registry');
 
 // Enforce registry isolation redirection
-process.env.AGY_GEN_TEST_DIR = REGISTRY_DIR;
+process.env.SENFIDE_TEST_DIR = REGISTRY_DIR;
 
 function cleanup() {
   if (fs.existsSync(TEST_OUTPUT_DIR)) {
@@ -94,7 +94,7 @@ async function run() {
     
     // We redirect process env to isolate global registry file
     const output = execSync(cmd, { 
-      env: { ...process.env, AGY_GEN_TEST_DIR: REGISTRY_DIR },
+      env: { ...process.env, SENFIDE_TEST_DIR: REGISTRY_DIR },
       encoding: 'utf-8' 
     });
     console.log("  [CLI Output]:\n" + output.split('\n').map(l => `    > ${l}`).join('\n'));
@@ -138,7 +138,7 @@ async function run() {
 
   // D. Assert Registry catalog database registration
   console.log("  Asserting global registry catalogs...");
-  const registryDb = path.join(REGISTRY_DIR, 'skills_index.json');
+  const registryDb = path.join(REGISTRY_DIR, 'senfide_index.json');
   assertExists(registryDb);
   const registryContent = JSON.parse(fs.readFileSync(registryDb, 'utf8'));
   const names = registryContent.skills.map(s => s.name);
@@ -152,7 +152,7 @@ async function run() {
   try {
     const cmd = `node "${path.resolve(__dirname, '../cli_bin/cli.js')}" --blueprint "${blueprintPath}"`;
     execSync(cmd, { 
-      env: { ...process.env, AGY_GEN_TEST_DIR: REGISTRY_DIR },
+      env: { ...process.env, SENFIDE_TEST_DIR: REGISTRY_DIR },
       stdio: 'ignore' 
     });
     throw new Error("Safety breach: CLI should have exited with code 1 on directory overwrite attempt!");
@@ -168,7 +168,7 @@ async function run() {
   try {
     const cmd = `node "${path.resolve(__dirname, '../cli_bin/cli.js')}" --blueprint "${blueprintPath}" --force`;
     execSync(cmd, { 
-      env: { ...process.env, AGY_GEN_TEST_DIR: REGISTRY_DIR },
+      env: { ...process.env, SENFIDE_TEST_DIR: REGISTRY_DIR },
       stdio: 'ignore' 
     });
     console.log("  ✓ Force override executed and rebuilt target folders cleanly!");
@@ -206,7 +206,7 @@ async function run() {
   try {
     const cmd = `node "${path.resolve(__dirname, '../cli_bin/cli.js')}" --blueprint "${compactBlueprintPath}"`;
     execSync(cmd, { 
-      env: { ...process.env, AGY_GEN_TEST_DIR: REGISTRY_DIR },
+      env: { ...process.env, SENFIDE_TEST_DIR: REGISTRY_DIR },
       stdio: 'ignore' 
     });
     console.log("  ✓ Compact Blueprint scaffolded successfully!");
