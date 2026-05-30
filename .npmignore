@@ -5,6 +5,7 @@ feedback/
 codebase-reviews/
 scratch/
 output/
+local-workspace/
 
 # Exclude installers to prevent Windows Defender / Antivirus blocks on global .ps1/.sh extraction
 installers/
