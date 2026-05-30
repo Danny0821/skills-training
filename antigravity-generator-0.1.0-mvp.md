@@ -39,7 +39,7 @@ graph TD
 - Registers `/generate` as a system-wide slash command in Antigravity.
 - Run global installer to deploy manifest to user configurations folder:
   ```bash
-  npm run install-global
+  npm run install-antigravity-gen
   ```
 - **Target folder resolved**: `C:\Users\Daniel\.gemini\config\skills\generate.md`
 - Once deployed, type `/generate [idea]` in **any** folder on your machine. The AI agent acts as a Principal Prompt Architect, expands the idea, and writes sandboxed files.

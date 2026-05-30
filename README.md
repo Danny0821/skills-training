@@ -40,9 +40,12 @@ npm install
 npm run generate
 
 # 4. (Optional) Sync slash commands globally from your local clone
-npm run install-global
+npm run install-antigravity-gen
 
-# 5. Run the unit and E2E verification tests
+# 5. (Optional) Purge global commands cleanly
+npm run uninstall-antigravity-gen
+
+# 6. Run the unit and E2E verification tests
 npm run test
 ```
 
