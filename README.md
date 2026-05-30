@@ -9,7 +9,7 @@
 
 **Senfide Engine (`sfe`)** is a professional-grade, zero-dependency, security-first command-line engine designed to automate the scaffolding and lifecycle management of isolated **AI Agent Skills, Hook Rules, Standalone Agent Profiles, and Coordinated Agent Systems** in localized developer workspaces.
 
-Rather than writing unstructured playbooks that lead to "AI slop" or context contamination, `agy-gen` programmatically structures your agent environments with strict execution boundaries, stack-specific telemetry indices, and automated guardrails.
+Rather than writing unstructured playbooks that lead to "AI slop" or context contamination, `sfe` programmatically structures your agent environments with strict execution boundaries, stack-specific telemetry indices, and automated guardrails.
 
 ---
 
@@ -36,8 +36,8 @@ cd skills-training
 # 2. Run setup
 npm install
 
-# 3. Launch the interactive guided CLI locally
-npm run generate
+# 3. Launch the programmatic CLI locally
+node cli_bin/cli.js --help
 
 # 4. (Optional) Sync slash commands globally from your local clone
 npm run install-sfe

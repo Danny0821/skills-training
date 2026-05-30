@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Antigravity 2.0 Scaffolder Binary Entry Point
+ * Senfide Engine CLI Binary Entry Point
  * 
  * Invokes the modular generator logic from scripts/generate.js
  * or delegates to scripts/index_manager.js for index lookups.
@@ -135,7 +135,7 @@ async function handleCommands() {
   if (options.blueprint !== null) {
     const blueprintPath = options.blueprint;
     if (!blueprintPath) {
-      console.error("🔴 Error: Please specify a blueprint JSON file path (e.g. agy-gen --blueprint scratch/blueprint.json).");
+      console.error("🔴 Error: Please specify a blueprint JSON file path (e.g. sfe --blueprint scratch/blueprint.json).");
       process.exit(1);
     }
 
@@ -166,13 +166,13 @@ async function handleCommands() {
   // 2. List Command
   if (options.list) {
     console.log("\n==================================================================");
-    console.log("             Globally Registered Antigravity Skills               ");
+    console.log("             Globally Registered Senfide Skills               ");
     console.log("==================================================================");
     
     try {
       const registry = loadIndex();
       if (!registry.skills || registry.skills.length === 0) {
-        console.log("\n🔍 No skills registered yet in the agy-gen global index.");
+        console.log("\n🔍 No skills registered yet in the Senfide global index.");
         console.log("Run the generator or scan a directory to catalog skills.");
       } else {
         registry.skills.forEach((skill, index) => printSkillEntry(skill, index));
@@ -189,11 +189,11 @@ async function handleCommands() {
   if (options.search !== null) {
     const term = options.search;
     if (!term) {
-      console.error("🔴 Error: Please specify a search term (e.g., agy-gen --search branch).");
+      console.error("🔴 Error: Please specify a search term (e.g., sfe --search branch).");
       process.exit(1);
     }
 
-    console.log(`\n🔍 Searching agy-gen index for: "${term}"...`);
+    console.log(`\n🔍 Searching Senfide index for: "${term}"...`);
     try {
       const matches = searchSkills(term);
       if (matches.length === 0) {

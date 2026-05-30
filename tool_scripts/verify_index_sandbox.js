@@ -1,7 +1,7 @@
 /**
  * verify_index_sandbox.js
  * 
- * End-to-end integration test validating the agy-gen index CLI commands
+ * End-to-end integration test validating the Senfide index CLI commands
  * (--list, --search, --scan) inside a simulated sandbox project workspace.
  * 
  * Generates its own fresh test fixtures at runtime to remain 100% self-contained.

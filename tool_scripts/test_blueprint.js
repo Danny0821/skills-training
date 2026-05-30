@@ -1,5 +1,5 @@
 /**
- * TDD Unit Verification Suite for Agy-Gen Blueprint Validation Engine
+ * TDD Unit Verification Suite for Senfide Blueprint Validation Engine
  */
 
 import fs from 'fs';

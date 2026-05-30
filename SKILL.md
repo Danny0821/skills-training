@@ -1,17 +1,14 @@
 ---
-name: "antigravity-generator"
-description: "Scaffold security-first, Caveman-styled skills, hooks, agents, or multi-agent systems for Antigravity 2.0."
+name: "senfide-engine"
+description: "Scaffold security-first, Caveman-styled skills, hooks, agents, or multi-agent systems for the Senfide Engine."
 version: "0.1.0"
 triggers:
-  - "idea: turn idea into skill"
-  - "idea: create agent hook"
-  - "idea: create custom agent"
-  - "idea: multi-agent system"
+  - "/sfe-gen"
 requirements:
   - "node: >=18"
 ---
 
-# SKILL.md — Antigravity 2.0 Generator (Caveman Style)
+# SKILL.md — Senfide Engine (Caveman Style)
 
 > [!NOTE]
 > Dense playbook for turning ideas into sandboxed Skills, Hooks, Agents, or coordinated systems.
@@ -36,13 +33,13 @@ requirements:
   - **Suggest standard Skill** (folder with `SKILL.md`).
 
 ### 2. Scaffold using CLI
-- Direct user to execute zero-dep interactive CLI:
+- Direct user to execute:
   ```bash
-  npm run generate
+  sfe --blueprint <blueprint-json-path>
   ```
-- Or run it directly for user:
+- Or run the tool scripts directly:
   ```bash
-  node scripts/generate.js
+  node cli_bin/cli.js --blueprint <blueprint-json-path>
   ```
 
 ### 3. Autolearner Protocol Integration
