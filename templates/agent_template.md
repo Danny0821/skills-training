@@ -1,7 +1,6 @@
 ---
 name: "{{NAME}}"
 description: "{{DESCRIPTION}}"
-recommended_model: "gemini-3.5-flash"
 capabilities:
   - "file_manipulation"
   - "shell_execution"
@@ -19,7 +18,6 @@ allowed_skills:
   <role>Agent: {{ROLE}}. Tone: Dense, Caveman, zero-filler.</role>
 
   <context>
-  - Model: gemini-3.5-flash
   - Pre-authorized sandbox permissions.
   - Check lessons_index.md & playbook.md first. Prevents regressions.
   </context>
